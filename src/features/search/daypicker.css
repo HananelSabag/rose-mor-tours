@@ -1,0 +1,49 @@
+/* Loaded after react-day-picker/style.css so these variables win. */
+.rdp-root {
+  --rdp-accent-color: var(--color-ocean-700);
+  --rdp-accent-background-color: var(--color-lagoon-100);
+  --rdp-range_middle-background-color: var(--color-lagoon-100);
+  --rdp-range_middle-color: var(--color-ocean-900);
+  --rdp-day-height: 2.75rem;
+  --rdp-day-width: 100%;
+  --rdp-day_button-height: 2.6rem;
+  --rdp-day_button-width: 2.6rem;
+  --rdp-selected-border: 2px solid var(--color-ocean-700);
+  --rdp-today-color: var(--color-coral-600);
+  --rdp-nav-height: 2.75rem;
+  --rdp-weekday-opacity: 0.55;
+  --rdp-months-gap: 2.5rem;
+  --rdp-gradient-direction: -90deg; /* RTL: the range band runs toward the left */
+  width: 100%;
+}
+.rdp-months {
+  max-width: none;
+  width: 100%;
+  flex-wrap: nowrap;
+}
+.rdp-month {
+  flex: 1;
+}
+.rdp-month_grid {
+  width: 100%;
+  table-layout: fixed; /* equal columns; auto layout gave the first one all the slack */
+}
+.rdp-day {
+  text-align: center;
+}
+.rdp-day_button {
+  margin-inline: auto;
+}
+.rdp-month_caption {
+  font-size: 1.05rem;
+  font-weight: 600;
+  padding-inline-start: 0.5rem;
+}
+.rdp-day_button {
+  font-variant-numeric: tabular-nums;
+  font-size: 1rem;
+}
+.rdp-range_start .rdp-day_button,
+.rdp-range_end .rdp-day_button {
+  font-weight: 700;
+}

@@ -1,11 +1,11 @@
-import { Check, SearchX } from 'lucide-react'
+import { Check, ChevronLeft, SearchX, Sparkles } from 'lucide-react'
 import { Link, useLocation, useParams } from 'react-router'
 import { Card, EmptyState, Loading, Page, PageTitle } from '@/components/Page'
 import { buttonClass } from '@/components/ui/button'
 import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon'
 import { whatsappLink } from '@/lib/business'
-import { formatDateRange, formatPhone } from '@/lib/format'
-import { useRequest } from './queries'
+import { formatDateRange, formatPhone, formatPrice } from '@/lib/format'
+import { liveOffer, useRequest } from './queries'
 import { RequestSummary } from './RequestSummary'
 import { StatusTrack } from './StatusTrack'
 
@@ -31,6 +31,7 @@ export function RequestPage() {
   }
 
   const dates = formatDateRange(request.check_in, request.check_out)
+  const offer = liveOffer(request)
   const waText = `היי, אני ${request.contact_name}. שלחתי בקשה למלון ב${request.destination} (${dates}).`
 
   return (
@@ -47,6 +48,24 @@ export function RequestPage() {
         </div>
       ) : (
         <PageTitle title={`הבקשה ל${request.destination}`} subtitle={dates} />
+      )}
+
+      {offer && (
+        <Link
+          to={`/o/${offer.public_token}`}
+          className="mb-6 flex items-center gap-4 rounded-sheet bg-linear-to-l from-sun-100 to-white p-5 shadow-lift ring-1 ring-sun-300/70 transition hover:ring-coral-500"
+        >
+          <span className="grid size-12 shrink-0 place-items-center rounded-full bg-coral-500 text-white">
+            <Sparkles className="size-6" />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block font-bold text-ocean-950">{offer.status === 'accepted' ? 'ההצעה שהזמנתם' : 'ההצעה שלכם מוכנה'}</span>
+            <span className="block truncate text-ink-soft">
+              {offer.hotel_name}, <span className="tabular">{formatPrice(offer.price_ils)}</span>
+            </span>
+          </span>
+          <ChevronLeft className="size-6 shrink-0 text-ocean-700" />
+        </Link>
       )}
 
       <div className="grid gap-5 lg:grid-cols-[1fr_1.3fr]">

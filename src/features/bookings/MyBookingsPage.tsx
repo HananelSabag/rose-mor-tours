@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
-import { Luggage } from 'lucide-react'
+import { ChevronLeft, Luggage } from 'lucide-react'
+import { Link } from 'react-router'
 import { EmptyState, Loading, Page, PageTitle, Pill } from '@/components/Page'
 import { formatDateRange, formatPrice } from '@/lib/format'
 import { BOOKING_STATUS } from '@/lib/labels'
@@ -35,7 +36,7 @@ export function MyBookingsPage() {
 
   return (
     <Page>
-      <PageTitle title="ההזמנות שלי" subtitle="הזמנות ששילמתם עליהן, והוואוצ׳רים שלהן." />
+      <PageTitle title="ההזמנות שלי" subtitle="ההזמנות שלכם, מהדרכונים ועד הוואוצ׳ר." />
 
       {!ready || (uid && isPending) ? (
         <Loading />
@@ -50,28 +51,36 @@ export function MyBookingsPage() {
         <EmptyState
           icon={Luggage}
           title="עוד אין הזמנות"
-          body="אחרי שתשלמו על הצעה, ההזמנה והוואוצ׳ר יחכו לכם כאן."
+          body="אחרי שתשריינו הצעה, ההזמנה והוואוצ׳ר יחכו לכם כאן."
           action={{ to: '/offers', label: 'להצעות שלי' }}
         />
       ) : (
         <ul className="space-y-3">
           {bookings.map((b) => (
-            <li key={b.id} className="rounded-sheet bg-white p-5 shadow-lift ring-1 ring-lagoon-200/70">
-              <div className="mb-2 flex items-center justify-between gap-3">
-                <Pill tone={STATUS_TONE[b.status]}>
-                  {BOOKING_STATUS[b.status]}
-                  {b.status === 'voucher_ready' && ' 🎉'}
-                </Pill>
-                <span className="tabular font-semibold text-ocean-900">{formatPrice(b.amount_ils)}</span>
-              </div>
-              {b.offer && (
-                <>
-                  <h2 className="text-xl font-bold text-ocean-950">{b.offer.hotel_name}</h2>
-                  <p className="mt-1 text-ink-soft">
-                    {b.offer.city}, {b.offer.country}. {formatDateRange(b.offer.check_in, b.offer.check_out)}
-                  </p>
-                </>
-              )}
+            <li key={b.id}>
+              <Link
+                to={`/bookings/${b.id}`}
+                className="flex items-center gap-3 rounded-sheet bg-white p-5 shadow-lift ring-1 ring-lagoon-200/70 transition hover:ring-turquoise-400"
+              >
+                <div className="min-w-0 flex-1">
+                  <div className="mb-2 flex items-center justify-between gap-3">
+                    <Pill tone={STATUS_TONE[b.status]}>
+                      {BOOKING_STATUS[b.status]}
+                      {b.status === 'voucher_ready' && ' 🎉'}
+                    </Pill>
+                    <span className="tabular font-semibold text-ocean-900">{formatPrice(b.amount_ils)}</span>
+                  </div>
+                  {b.offer && (
+                    <>
+                      <h2 className="text-xl font-bold text-ocean-950">{b.offer.hotel_name}</h2>
+                      <p className="mt-1 text-ink-soft">
+                        {b.offer.city}, {b.offer.country}. {formatDateRange(b.offer.check_in, b.offer.check_out)}
+                      </p>
+                    </>
+                  )}
+                </div>
+                <ChevronLeft className="size-6 shrink-0 text-ink-faint" />
+              </Link>
             </li>
           ))}
         </ul>

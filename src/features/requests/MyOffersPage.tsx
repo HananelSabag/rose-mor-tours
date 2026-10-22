@@ -4,7 +4,7 @@ import { EmptyState, Loading, Page, PageTitle, Pill } from '@/components/Page'
 import { formatDateRange, nightsBetween, pluralNights } from '@/lib/format'
 import { REQUEST_STATUS, partySummary } from '@/lib/labels'
 import type { RequestStatus } from '@/lib/types'
-import { useMyRequests } from './queries'
+import { liveOffer, useMyRequests } from './queries'
 
 const STATUS_TONE: Record<RequestStatus, 'lagoon' | 'sun' | 'coral' | 'ocean' | 'muted'> = {
   new: 'lagoon',
@@ -42,7 +42,7 @@ export function MyOffersPage() {
           {requests.map((r) => (
             <li key={r.id}>
               <Link
-                to={`/requests/${r.id}`}
+                to={liveOffer(r) ? `/o/${liveOffer(r)!.public_token}` : `/requests/${r.id}`}
                 className="flex items-center gap-4 rounded-sheet bg-white p-5 shadow-lift ring-1 ring-lagoon-200/70 transition hover:ring-turquoise-400"
               >
                 <div className="min-w-0 flex-1">
@@ -54,6 +54,9 @@ export function MyOffersPage() {
                     {formatDateRange(r.check_in, r.check_out)}, {pluralNights(nightsBetween(r.check_in, r.check_out))}
                   </p>
                   <p className="text-sm text-ink-faint">{partySummary(r.adults, r.children_ages)}</p>
+                  {liveOffer(r) && (
+                    <p className="mt-2 font-semibold text-coral-600">לצפייה בהצעה: {liveOffer(r)!.hotel_name}</p>
+                  )}
                 </div>
                 <ChevronLeft className="size-6 shrink-0 text-ink-faint" />
               </Link>

@@ -7,14 +7,16 @@ export function AppShell() {
   const isHome = pathname === '/'
   // The questionnaire is a focused flow: it brings its own top bar and sticky action.
   const isFlow = pathname.startsWith('/search')
+  // The offer page has its own sticky action bar in place of the tabs.
+  const hideNav = isFlow || pathname.startsWith('/o/')
 
   return (
     <div className="min-h-dvh">
       {!isFlow && <SiteHeader overlay={isHome} />}
-      <main className={isFlow ? '' : 'pb-28 md:pb-16'}>
+      <main className={hideNav ? '' : 'pb-28 md:pb-16'}>
         <Outlet />
       </main>
-      {!isFlow && <BottomNav />}
+      {!hideNav && <BottomNav />}
       <ScrollRestoration />
     </div>
   )

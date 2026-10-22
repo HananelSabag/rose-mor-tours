@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Check, Phone, Share, SquarePlus, Smartphone } from 'lucide-react'
+import { Check, LayoutDashboard, Phone, Share, SquarePlus, Smartphone } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router'
 import { Card, Loading, Page, PageTitle } from '@/components/Page'
@@ -7,6 +7,7 @@ import { buttonClass } from '@/components/ui/button'
 import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon'
 import { BUSINESS, whatsappLink } from '@/lib/business'
 import { formatPhone, normalizePhone } from '@/lib/format'
+import { useStaff } from '@/lib/auth'
 import { promptInstall, useInstallState } from '@/lib/install'
 import { useSession } from '@/lib/session'
 import { supabase } from '@/lib/supabase'
@@ -134,10 +135,16 @@ function InstallCard() {
 
 export function ProfilePage() {
   const { session, ready } = useSession()
+  const { isStaff } = useStaff()
 
   return (
     <Page>
       <PageTitle title="פרופיל" />
+      {isStaff && (
+        <Link to="/admin" className={buttonClass('primary', 'md', 'mb-5')}>
+          <LayoutDashboard className="size-5" /> לממשק הצוות
+        </Link>
+      )}
       <div className="grid gap-5 md:grid-cols-2">
         {!ready ? (
           <Card><Loading /></Card>

@@ -23,10 +23,9 @@ dist-ssr
 *.sln
 *.sw?
 
-# Env & local tooling
+# Env & local tooling (committed .env.<mode> files hold public values only)
 .env
-.env.*
-!.env.example
+*.local
 .wrangler
 dev-dist
 .claude/settings.local.json

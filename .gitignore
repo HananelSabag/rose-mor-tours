@@ -23,8 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 
-# Env & local tooling (committed .env.<mode> files hold public values only)
-.env
+# Env & local tooling (the committed .env holds public values only)
 *.local
 .wrangler
 dev-dist

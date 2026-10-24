@@ -4,6 +4,8 @@ import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
+const shortcutIcon = [{ src: '/pwa-192x192.png', sizes: '192x192', type: 'image/png' }]
+
 // https://vite.dev/config/
 export default defineConfig({
   resolve: {
@@ -19,13 +21,14 @@ export default defineConfig({
       filename: 'sw.ts',
       registerType: 'autoUpdate',
       injectRegister: false,
+      // Icons, maskable icon, favicon and iOS splash screens come from pwa-assets.config.ts.
       pwaAssets: {
-        image: 'public/logo.svg',
-        preset: 'minimal-2023',
+        config: true,
         includeHtmlHeadLinks: true,
         overrideManifestIcons: true,
       },
       manifest: {
+        id: '/',
         name: 'Rose&Mor tours',
         short_name: 'Rose&Mor',
         description: 'מלונות בחו״ל במחיר של ספקים סיטונאיים. שאלון של דקה, הצעה בוואטסאפ.',
@@ -34,11 +37,29 @@ export default defineConfig({
         start_url: '/',
         scope: '/',
         display: 'standalone',
-        background_color: '#eef8f7',
-        theme_color: '#0b7f86',
+        display_override: ['standalone', 'minimal-ui'],
+        categories: ['travel'],
+        // Launch splash (Android) blends into the full-bleed icon; the bar matches the app's light top.
+        background_color: '#08727a',
+        theme_color: '#eef8f7',
+        // A WhatsApp link to an offer reuses the open app window instead of stacking new ones.
+        launch_handler: { client_mode: ['navigate-existing', 'auto'] },
+        shortcuts: [
+          { name: 'חיפוש מלון', short_name: 'חיפוש', url: '/search', icons: shortcutIcon },
+          { name: 'ההצעות שלי', short_name: 'הצעות', url: '/offers', icons: shortcutIcon },
+          { name: 'ההזמנות שלי', short_name: 'הזמנות', url: '/bookings', icons: shortcutIcon },
+        ],
+        // Enables Android's richer install sheet.
+        screenshots: [
+          { src: '/screenshots/home-narrow.png', sizes: '780x1688', type: 'image/png', form_factor: 'narrow', label: 'אתם בוחרים יעד, אנחנו מוצאים מלון' },
+          { src: '/screenshots/search-narrow.png', sizes: '780x1688', type: 'image/png', form_factor: 'narrow', label: 'שאלון של דקה' },
+          { src: '/screenshots/home-wide.png', sizes: '1440x900', type: 'image/png', form_factor: 'wide', label: 'Rose&Mor tours' },
+        ],
       },
       injectManifest: {
         globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2}'],
+        // Splash screens and store screenshots are fetched by the OS, never by the app.
+        globIgnores: ['**/apple-splash-*.png', '**/screenshots/**', '**/og.png'],
       },
     }),
   ],

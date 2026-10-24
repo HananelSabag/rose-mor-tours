@@ -18,7 +18,7 @@ type AdminBooking = BookingDetails & {
   offer: (NonNullable<BookingDetails['offer']> & { request: { id: string; contact_name: string; contact_phone: string } | null }) | null
 }
 
-const field = 'h-11 w-full rounded-field bg-white px-3 ring-1 ring-lagoon-200 outline-none focus:ring-2 focus:ring-turquoise-400'
+const field = 'h-11 w-full rounded-field bg-white px-3 ring-1 ring-lagoon-200 outline-none focus:ring-2 focus:ring-ocean-700'
 
 function TravelerRow({ traveler, label, onSaved }: { traveler: AdminBooking['travelers'][number]; label: string; onSaved: () => void }) {
   const [name, setName] = useState(traveler.full_name_en ?? '')
@@ -60,13 +60,13 @@ function TravelerRow({ traveler, label, onSaved }: { traveler: AdminBooking['tra
           placeholder="שם באנגלית כמו בדרכון"
           dir="ltr"
           aria-invalid={invalid}
-          className={`${field} uppercase aria-invalid:ring-coral-500`}
+          className={`${field} uppercase aria-invalid:ring-coral-600`}
         />
         <button type="submit" disabled={!dirty || invalid || saveName.isPending} className={buttonClass('secondary', 'md', 'h-11 shrink-0')}>
           שמירה
         </button>
       </form>
-      {open.isError && <p className="ps-9 text-sm text-coral-600">לא הצלחנו לפתוח את הקובץ.</p>}
+      {open.isError && <p className="ps-9 text-sm text-coral-700">לא הצלחנו לפתוח את הקובץ.</p>}
     </li>
   )
 }
@@ -260,7 +260,7 @@ export function AdminBookingPage() {
                   }}
                 />
               </label>
-              {uploadVoucher.isError && <p className="mt-2 text-sm text-coral-600">ההעלאה נכשלה. עד 20MB, PDF או תמונה.</p>}
+              {uploadVoucher.isError && <p className="mt-2 text-sm text-coral-700">ההעלאה נכשלה. עד 20MB, PDF או תמונה.</p>}
               {booking.receipt_url && (
                 <a href={booking.receipt_url} target="_blank" rel="noreferrer" className="mt-4 block text-sm text-ocean-700 underline">
                   קבלה
@@ -275,12 +275,12 @@ export function AdminBookingPage() {
               onClick={() => {
                 if (window.confirm('לבטל את ההזמנה?')) update.mutate({ status: 'cancelled' })
               }}
-              className={buttonClass('ghost', 'md', 'text-coral-600 hover:bg-coral-500/10')}
+              className={buttonClass('ghost', 'md', 'text-coral-700 hover:bg-coral-500/10')}
             >
               <XCircle className="size-4" /> ביטול ההזמנה
             </button>
           )}
-          {update.isError && <p role="alert" className="text-sm text-coral-600">הפעולה נכשלה. נסו שוב.</p>}
+          {update.isError && <p role="alert" className="text-sm text-coral-700">הפעולה נכשלה. נסו שוב.</p>}
         </div>
       </div>
     </div>

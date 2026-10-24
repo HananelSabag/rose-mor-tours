@@ -2,13 +2,33 @@
 <html lang="he" dir="rtl">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#0b7f86" />
+    <!-- resizes-content: on Android the keyboard shrinks the layout, so sticky actions stay above it -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
     <title>Rose&amp;Mor tours | מלונות בחו״ל במחיר של סיטונאי</title>
     <meta
       name="description"
       content="ספרו לנו לאן אתם טסים, והצוות של Rose&Mor ימצא לכם מלון בחו״ל במחיר של ספקים סיטונאיים. שאלון של דקה, הצעה מסודרת בוואטסאפ."
     />
+
+    <!-- App chrome: Android/Chrome bar and iOS home-screen app -->
+    <meta name="theme-color" content="#eef8f7" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Rose&amp;Mor" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <!-- Prices and dates are not phone numbers -->
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- Link previews (WhatsApp, Facebook) for the home page -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="he_IL" />
+    <meta property="og:site_name" content="Rose&amp;Mor tours" />
+    <meta property="og:title" content="Rose&amp;Mor tours | אתם בוחרים יעד, אנחנו מוצאים מלון" />
+    <meta property="og:description" content="שאלון של דקה, והצוות שולח לכם הצעה מסודרת למלון בחו״ל ישר לוואטסאפ." />
+    <meta property="og:image" content="https://rose-mor-tours.rose-mor-tours.workers.dev/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>
     <div id="root"></div>

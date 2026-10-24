@@ -18,7 +18,7 @@ export function PageTitle({ title, subtitle }: { title: string; subtitle?: strin
 }
 
 export function Card({ children, className }: { children: ReactNode; className?: string }) {
-  return <section className={clsx('rounded-sheet bg-white p-5 shadow-lift ring-1 ring-lagoon-200/70 md:p-6', className)}>{children}</section>
+  return <section className={clsx('rounded-sheet bg-white p-5 shadow-lift md:p-6', className)}>{children}</section>
 }
 
 export function Loading({ label = 'טוען' }: { label?: string }) {
@@ -27,6 +27,21 @@ export function Loading({ label = 'טוען' }: { label?: string }) {
       <LoaderCircle className="size-6 animate-spin text-turquoise-500" />
       {label}
     </div>
+  )
+}
+
+/** Placeholder rows shaped like the list cards they precede. */
+export function ListSkeleton({ rows = 3 }: { rows?: number }) {
+  return (
+    <ul className="space-y-3" role="status" aria-label="טוען">
+      {Array.from({ length: rows }, (_, i) => (
+        <li key={i} className="rounded-sheet bg-white p-5 shadow-lift">
+          <div className="skeleton mb-3 h-7 w-24 rounded-full!" />
+          <div className="skeleton h-6 w-1/2" />
+          <div className="skeleton mt-2 h-4 w-2/3" />
+        </li>
+      ))}
+    </ul>
   )
 }
 
@@ -56,8 +71,8 @@ export function EmptyState({ icon: Icon, title, body, action }: EmptyProps) {
 
 const PILL_TONES = {
   lagoon: 'bg-lagoon-100 text-ocean-800',
-  sun: 'bg-sun-100 text-[#8a5300]',
-  coral: 'bg-coral-500/12 text-coral-600',
+  sun: 'bg-sun-100 text-sun-ink',
+  coral: 'bg-coral-500/12 text-coral-700',
   ocean: 'bg-ocean-800 text-white',
   muted: 'bg-ink/5 text-ink-soft',
 } as const

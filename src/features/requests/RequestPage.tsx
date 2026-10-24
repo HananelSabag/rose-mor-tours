@@ -1,5 +1,6 @@
 import { Check, ChevronLeft, SearchX, Sparkles } from 'lucide-react'
 import { Link, useLocation, useParams } from 'react-router'
+import { InstallHint } from '@/components/InstallHint'
 import { Card, EmptyState, Loading, Page, PageTitle } from '@/components/Page'
 import { buttonClass } from '@/components/ui/button'
 import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon'
@@ -38,7 +39,7 @@ export function RequestPage() {
     <Page>
       {justSent ? (
         <div className="animate-rise mb-8 flex flex-col items-start gap-4">
-          <span className="grid size-16 place-items-center rounded-full bg-linear-to-b from-sun-300 to-coral-500 text-white shadow-cta">
+          <span className="grid size-16 place-items-center rounded-full bg-linear-to-b from-sun-300 to-coral-600 text-white shadow-cta">
             <Check className="size-9" strokeWidth={3} />
           </span>
           <PageTitle
@@ -53,9 +54,9 @@ export function RequestPage() {
       {offer && (
         <Link
           to={`/o/${offer.public_token}`}
-          className="mb-6 flex items-center gap-4 rounded-sheet bg-linear-to-l from-sun-100 to-white p-5 shadow-lift ring-1 ring-sun-300/70 transition hover:ring-coral-500"
+          className="mb-6 flex items-center gap-4 rounded-sheet bg-linear-to-l from-sun-100 to-white p-5 shadow-lift ring-1 ring-sun-300/70 transition hover:ring-coral-600"
         >
-          <span className="grid size-12 shrink-0 place-items-center rounded-full bg-coral-500 text-white">
+          <span className="grid size-12 shrink-0 place-items-center rounded-full bg-coral-600 text-white">
             <Sparkles className="size-6" />
           </span>
           <span className="min-w-0 flex-1">
@@ -88,6 +89,8 @@ export function RequestPage() {
           בקשה חדשה
         </Link>
       </div>
+
+      {justSent && <InstallHint />}
     </Page>
   )
 }

@@ -1,18 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- TEMPORARY mark until the business supplies a real logo (see docs/knowledge.md).
+       Full-bleed square on a solid background: Android masks and iOS rounds it, and
+       pwa-assets.config.ts pads splash screens with this exact color. Artwork stays
+       inside the maskable safe zone (radius ~205 from the centre). -->
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#0d8d93"/>
-      <stop offset="1" stop-color="#075866"/>
-    </linearGradient>
     <linearGradient id="sun" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#ffd37a"/>
-      <stop offset="1" stop-color="#ff7a59"/>
+      <stop offset="1" stop-color="#ff6f4f"/>
     </linearGradient>
     <clipPath id="above-horizon">
       <rect x="0" y="0" width="512" height="292"/>
     </clipPath>
   </defs>
-  <rect width="512" height="512" rx="116" fill="url(#bg)"/>
+  <rect width="512" height="512" fill="#08727a"/>
   <circle cx="256" cy="292" r="122" fill="url(#sun)" clip-path="url(#above-horizon)"/>
   <path d="M92 326c54-20 110-20 164 0s110 20 164 0" fill="none" stroke="#8fe9e1" stroke-width="24" stroke-linecap="round"/>
   <path d="M140 384c38-14 78-14 116 0s78 14 116 0" fill="none" stroke="#8fe9e1" stroke-opacity=".55" stroke-width="24" stroke-linecap="round"/>

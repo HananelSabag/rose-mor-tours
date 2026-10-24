@@ -9,7 +9,7 @@ import { useStaff } from '@/lib/auth'
 import { supabase } from '@/lib/supabase'
 
 const field =
-  'h-14 w-full rounded-field bg-white px-4 text-lg ring-1 ring-lagoon-200 outline-none placeholder:text-ink-faint focus:ring-2 focus:ring-turquoise-400'
+  'h-14 w-full rounded-field bg-white px-4 text-lg ring-1 ring-lagoon-200 outline-none placeholder:text-ink-faint focus:ring-2 focus:ring-ocean-700'
 
 /** Which sign-in methods are switched on in Supabase Auth (public endpoint). */
 function useAuthProviders() {
@@ -126,7 +126,7 @@ export function AdminLoginPage() {
                   <span className="mb-2 block font-medium">מייל</span>
                   <input type="email" required autoComplete="email" dir="ltr" value={email} onChange={(e) => setEmail(e.target.value)} className={`${field} text-end`} />
                 </label>
-                {sendCode.isError && <p role="alert" className="text-sm text-coral-600">לא הצלחנו לשלוח קוד. נסו שוב בעוד דקה.</p>}
+                {sendCode.isError && <p role="alert" className="text-sm text-coral-700">לא הצלחנו לשלוח קוד. נסו שוב בעוד דקה.</p>}
                 <button type="submit" disabled={sendCode.isPending} className={buttonClass('primary', 'lg', 'w-full')}>
                   {sendCode.isPending ? <LoaderCircle className="size-5 animate-spin" /> : <Mail className="size-5" />}
                   שליחת קוד
@@ -156,7 +156,7 @@ export function AdminLoginPage() {
                     autoFocus
                   />
                 </label>
-                {verify.isError && <p role="alert" className="text-sm text-coral-600">הקוד לא נכון או שפג תוקפו.</p>}
+                {verify.isError && <p role="alert" className="text-sm text-coral-700">הקוד לא נכון או שפג תוקפו.</p>}
                 <button type="submit" disabled={verify.isPending} className={buttonClass('primary', 'lg', 'w-full')}>
                   {verify.isPending && <LoaderCircle className="size-5 animate-spin" />}
                   כניסה

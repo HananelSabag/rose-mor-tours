@@ -38,7 +38,7 @@ export function HotelStep({ draft, next }: StepProps) {
               if (e.key === 'Enter' && draft.hotelName.trim().length >= 2) next()
             }}
             placeholder="למשל Lindos Blu"
-            className="h-14 w-full rounded-field bg-white px-4 text-lg ring-1 ring-lagoon-200 outline-none placeholder:text-ink-faint focus:ring-2 focus:ring-turquoise-400"
+            className="h-14 w-full rounded-field bg-white px-4 text-lg ring-1 ring-lagoon-200 outline-none placeholder:text-ink-faint focus:ring-2 focus:ring-ocean-700"
           />
         </div>
       )}

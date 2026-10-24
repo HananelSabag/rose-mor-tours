@@ -13,7 +13,7 @@ import { useSession } from '@/lib/session'
 import { supabase } from '@/lib/supabase'
 
 const field =
-  'h-12 w-full rounded-field bg-lagoon-50 px-4 text-base ring-1 ring-lagoon-200 outline-none focus:ring-2 focus:ring-turquoise-400'
+  'h-12 w-full rounded-field bg-lagoon-50 px-4 text-base ring-1 ring-lagoon-200 outline-none focus:ring-2 focus:ring-ocean-700'
 
 type ProfileDetails = { full_name: string | null; phone: string | null; email: string | null }
 
@@ -28,7 +28,7 @@ function DetailsCard({ uid }: { uid: string }) {
   })
 
   if (isPending) return <Card><Loading /></Card>
-  if (isError) return <Card><p role="alert" className="text-coral-600">לא הצלחנו לטעון את הפרטים.</p></Card>
+  if (isError) return <Card><p role="alert" className="text-coral-700">לא הצלחנו לטעון את הפרטים.</p></Card>
   return <DetailsForm uid={uid} profile={profile} />
 }
 
@@ -69,7 +69,7 @@ function DetailsForm({ uid, profile }: { uid: string; profile: ProfileDetails })
         <label className="block">
           <span className="mb-1.5 block text-sm font-medium text-ink-soft">טלפון נייד</span>
           <input
-            className={`${field} text-end ${phoneInvalid ? 'ring-coral-500' : ''}`}
+            className={`${field} text-end ${phoneInvalid ? 'ring-coral-600' : ''}`}
             type="tel"
             inputMode="tel"
             dir="ltr"
@@ -78,7 +78,7 @@ function DetailsForm({ uid, profile }: { uid: string; profile: ProfileDetails })
             onChange={(e) => setPhone(e.target.value)}
             aria-invalid={phoneInvalid}
           />
-          {phoneInvalid && <span className="mt-1.5 block text-sm text-coral-600">צריך מספר נייד, למשל 050-123-4567</span>}
+          {phoneInvalid && <span className="mt-1.5 block text-sm text-coral-700">צריך מספר נייד, למשל 050-123-4567</span>}
         </label>
         {profile.email && <p className="text-sm text-ink-soft">מייל: <span dir="ltr">{profile.email}</span></p>}
         <div className="flex items-center gap-3">
@@ -90,7 +90,7 @@ function DetailsForm({ uid, profile }: { uid: string; profile: ProfileDetails })
               <Check className="size-4" /> נשמר
             </span>
           )}
-          {save.isError && <span className="text-sm text-coral-600" role="alert">השמירה נכשלה. נסו שוב.</span>}
+          {save.isError && <span className="text-sm text-coral-700" role="alert">השמירה נכשלה. נסו שוב.</span>}
         </div>
       </form>
       <p className="mt-5 border-t border-lagoon-200 pt-4 text-sm leading-relaxed text-ink-soft">

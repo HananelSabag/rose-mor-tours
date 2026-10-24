@@ -73,7 +73,7 @@ export function StyleStep({ draft }: StepProps) {
           value={draft.notes}
           onChange={(e) => updateDraft({ notes: e.target.value })}
           placeholder="קרוב לחוף, בריכה מחוממת, מתאים לעגלה..."
-          className="w-full resize-none rounded-field bg-white p-4 text-base ring-1 ring-lagoon-200 outline-none placeholder:text-ink-faint focus:ring-2 focus:ring-turquoise-400"
+          className="w-full resize-none rounded-field bg-white p-4 text-base ring-1 ring-lagoon-200 outline-none placeholder:text-ink-faint focus:ring-2 focus:ring-ocean-700"
         />
       </section>
     </div>

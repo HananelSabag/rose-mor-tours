@@ -47,7 +47,7 @@ function Steps({ status }: { status: BookingDetails['status'] }) {
 }
 
 function StatusCard({ tone, title, children }: { tone: 'sun' | 'lagoon' | 'coral'; title: string; children: ReactNode }) {
-  const tones = { sun: 'from-sun-100 to-white ring-sun-300/60', lagoon: 'from-lagoon-100 to-white ring-lagoon-200', coral: 'from-coral-500/10 to-white ring-coral-500/30' }
+  const tones = { sun: 'from-sun-100 to-white ring-sun-300/60', lagoon: 'from-lagoon-100 to-white ring-lagoon-200', coral: 'from-coral-500/10 to-white ring-coral-600/30' }
   return (
     <section className={clsx('rounded-sheet bg-linear-to-b p-6 ring-1', tones[tone])}>
       <h2 className="text-xl font-bold text-ocean-950">{title}</h2>
@@ -140,7 +140,7 @@ export function BookingPage() {
               </a>
             )}
           </div>
-          {openVoucher.isError && <p role="alert" className="text-sm text-coral-600">לא הצלחנו לפתוח את הקובץ. נסו שוב.</p>}
+          {openVoucher.isError && <p role="alert" className="text-sm text-coral-700">לא הצלחנו לפתוח את הקובץ. נסו שוב.</p>}
           <a href={whatsappLink(`היי, אני בחופשה ב${offer.hotel_name} וצריך עזרה`)} target="_blank" rel="noreferrer" className={buttonClass('whatsapp', 'md')}>
             <WhatsAppIcon /> עזרה בחו״ל
           </a>

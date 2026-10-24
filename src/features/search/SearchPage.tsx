@@ -112,7 +112,7 @@ export function SearchPage() {
 
         <div className="sticky bottom-0 -mx-4 mt-8 bg-linear-to-t from-lagoon-50 from-70% to-transparent px-4 pt-6 safe-bottom">
           {submit.error && (
-            <p role="alert" className="mb-3 rounded-field bg-coral-500/10 px-4 py-3 text-coral-600">
+            <p role="alert" className="mb-3 rounded-field bg-coral-500/10 px-4 py-3 text-coral-700">
               {submit.error instanceof SubmitError ? submit.error.message : 'משהו השתבש. נסו שוב.'}
             </p>
           )}

@@ -40,7 +40,7 @@ export function PartyStep({ draft }: StepProps) {
                       childrenAges: d.childrenAges.map((a, i) => (i === index ? Number(e.target.value) : a)),
                     }))
                   }
-                  className={`h-12 w-full rounded-field bg-lagoon-50 px-3 text-base ring-1 outline-none focus:ring-2 focus:ring-turquoise-400 ${
+                  className={`h-12 w-full rounded-field bg-lagoon-50 px-3 text-base ring-1 outline-none focus:ring-2 focus:ring-ocean-700 ${
                     age === null ? 'ring-sun-400' : 'ring-lagoon-200'
                   }`}
                 >

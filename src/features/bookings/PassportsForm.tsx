@@ -10,7 +10,7 @@ import { supabase } from '@/lib/supabase'
 import { travelerLabels, type BookingDetails } from './queries'
 
 const field =
-  'h-14 w-full rounded-field bg-white px-4 text-lg ring-1 ring-lagoon-200 outline-none placeholder:text-ink-faint focus:ring-2 focus:ring-turquoise-400'
+  'h-14 w-full rounded-field bg-white px-4 text-lg ring-1 ring-lagoon-200 outline-none placeholder:text-ink-faint focus:ring-2 focus:ring-ocean-700'
 
 function TravelerUpload({ booking, traveler, label }: { booking: BookingDetails; traveler: BookingDetails['travelers'][number]; label: string }) {
   const queryClient = useQueryClient()
@@ -48,7 +48,7 @@ function TravelerUpload({ booking, traveler, label }: { booking: BookingDetails;
       </span>
       <div className="min-w-0 flex-1">
         <div className="font-semibold">{label}</div>
-        <div className={clsx('text-sm', upload.isError ? 'text-coral-600' : 'text-ink-soft')}>
+        <div className={clsx('text-sm', upload.isError ? 'text-coral-700' : 'text-ink-soft')}>
           {upload.isPending
             ? 'מעלים...'
             : upload.isError
@@ -131,7 +131,7 @@ export function PassportsForm({ booking }: { booking: BookingDetails }) {
       </section>
 
       {submit.isError && (
-        <p role="alert" className="rounded-field bg-coral-500/10 px-4 py-3 text-coral-600">
+        <p role="alert" className="rounded-field bg-coral-500/10 px-4 py-3 text-coral-700">
           לא הצלחנו לשלוח. בדקו שכל הדרכונים הועלו ונסו שוב.
         </p>
       )}

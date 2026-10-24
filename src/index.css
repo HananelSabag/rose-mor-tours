@@ -23,40 +23,52 @@
 @theme {
   --font-sans: 'Rubik Variable', 'Rubik', system-ui, sans-serif;
 
-  /* Ocean: depth, text, primary surfaces */
+  /* Ocean: depth, text, primary surfaces. 700 holds 5:1 on the lagoon background. */
   --color-ocean-950: #04313a;
   --color-ocean-900: #064650;
   --color-ocean-800: #075866;
-  --color-ocean-700: #0b7f86;
-  /* Pool water */
-  --color-turquoise-500: #14b3ad;
+  --color-ocean-700: #08727a;
+  /* Pool water. 500 is the darkest step that still reads turquoise, and holds 3:1 for icons. */
+  --color-turquoise-500: #10a39e;
   --color-turquoise-400: #3fcbc3;
   --color-turquoise-300: #8fe9e1;
   /* Lagoon: light aqua surfaces */
   --color-lagoon-200: #b8ece6;
   --color-lagoon-100: #daf5f1;
   --color-lagoon-50: #eef8f7;
-  /* Sunset: actions, prices, the timer */
+  /* Sunset. 500 is decoration only; 600 carries white text (4.6:1); 700 is coral text. */
   --color-coral-500: #ff6f4f;
-  --color-coral-600: #e9532f;
+  --color-coral-600: #d4401f;
+  --color-coral-700: #b33a1e;
   --color-sun-400: #ffb547;
   --color-sun-300: #ffd37a;
   --color-sun-100: #fff1d6;
-  /* Text */
+  --color-sun-ink: #8a5300;
+  /* WhatsApp's own green, used only on WhatsApp actions */
+  --color-whatsapp: #25d366;
+  --color-whatsapp-hover: #1fc15c;
+  --color-whatsapp-ink: #05301a;
+  --color-whatsapp-mark: #1fa855;
+  /* Text: every step holds 4.5:1 on white, lagoon-50 and sun-100 */
   --color-ink: #0d2b31;
   --color-ink-soft: #46646a;
-  --color-ink-faint: #7d979b;
+  --color-ink-faint: #55717a;
 
-  --radius-sheet: 1.75rem;
-  --radius-field: 1rem;
+  /* Radius hierarchy: fields < cards < docked bars */
+  --radius-field: 0.75rem;
+  --radius-sheet: 1rem;
+  --radius-dock: 1.5rem;
 
   --shadow-glass: 0 1px 0 rgb(255 255 255 / 0.7) inset, 0 18px 40px -18px rgb(6 70 80 / 0.35);
-  --shadow-lift: 0 10px 28px -14px rgb(6 70 80 / 0.4);
-  --shadow-cta: 0 12px 26px -12px rgb(233 83 47 / 0.75);
+  --shadow-lift: 0 1px 2px rgb(6 70 80 / 0.06), 0 10px 28px -14px rgb(6 70 80 / 0.35);
+  --shadow-cta: 0 12px 26px -12px rgb(212 64 31 / 0.7);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 
   --animate-shimmer: shimmer 7s ease-in-out infinite;
   --animate-drift: drift 14s ease-in-out infinite alternate;
-  --animate-rise: rise 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-rise: rise 480ms var(--ease-out-expo) both;
+  --animate-fade: fade 320ms ease-out both;
 
   @keyframes shimmer {
     0%, 100% { opacity: 0.35; }
@@ -67,8 +79,12 @@
     to { transform: translateX(-18px); }
   }
   @keyframes rise {
-    from { opacity: 0; transform: translateY(8px); }
+    from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: none; }
+  }
+  @keyframes fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 }
 
@@ -76,13 +92,33 @@
   html {
     -webkit-tap-highlight-color: transparent;
     text-size-adjust: 100%;
+    scrollbar-color: var(--color-lagoon-200) transparent;
+    accent-color: var(--color-ocean-700);
   }
   body {
     @apply bg-lagoon-50 font-sans text-ink antialiased;
     min-height: 100dvh;
+    caret-color: var(--color-ocean-700);
+    /* Landscape phones: keep content clear of the notch. */
+    padding-inline: env(safe-area-inset-left) env(safe-area-inset-right);
+  }
+  ::selection {
+    background: var(--color-sun-300);
+    color: var(--color-ocean-950);
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  a {
+    text-underline-offset: 0.2em;
   }
   :focus-visible {
-    outline: 3px solid var(--color-turquoise-400);
+    outline: 3px solid var(--color-ocean-700);
     outline-offset: 2px;
   }
   input,
@@ -112,12 +148,31 @@
   padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
 }
 
+/* Loading placeholder shaped like the content it stands in for. */
+@utility skeleton {
+  background: linear-gradient(90deg, var(--color-lagoon-100) 0%, #ffffff 50%, var(--color-lagoon-100) 100%);
+  background-size: 200% 100%;
+  animation: shimmer-bg 1.4s ease-in-out infinite;
+  border-radius: var(--radius-field);
+}
+
+@keyframes shimmer-bg {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+/* Reduced motion: drop the decorative loops and travel, keep state changes visible. */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+  .animate-shimmer,
+  .animate-drift,
+  .animate-pulse,
+  .skeleton {
+    animation: none !important;
+  }
+  .animate-rise {
+    animation-name: fade !important;
+  }
+  html {
+    scroll-behavior: auto !important;
   }
 }

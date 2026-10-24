@@ -1,6 +1,6 @@
 import { ChevronLeft, Inbox } from 'lucide-react'
 import { Link } from 'react-router'
-import { EmptyState, Loading, Page, PageTitle, Pill } from '@/components/Page'
+import { EmptyState, ListSkeleton, Page, PageTitle, Pill } from '@/components/Page'
 import { formatDateRange, nightsBetween, pluralNights } from '@/lib/format'
 import { REQUEST_STATUS, partySummary } from '@/lib/labels'
 import type { RequestStatus } from '@/lib/types'
@@ -22,9 +22,9 @@ export function MyOffersPage() {
       <PageTitle title="ההצעות שלי" subtitle="הבקשות ששלחתם וההצעות שהצוות הכין לכם." />
 
       {!sessionReady || (signedIn && isPending) ? (
-        <Loading />
+        <ListSkeleton />
       ) : isError ? (
-        <p role="alert" className="rounded-field bg-coral-500/10 px-4 py-3 text-coral-600">
+        <p role="alert" className="rounded-field bg-coral-500/10 px-4 py-3 text-coral-700">
           לא הצלחנו לטעון את הבקשות.{' '}
           <button type="button" className="font-semibold underline" onClick={() => void refetch()}>
             לנסות שוב
@@ -43,7 +43,7 @@ export function MyOffersPage() {
             <li key={r.id}>
               <Link
                 to={liveOffer(r) ? `/o/${liveOffer(r)!.public_token}` : `/requests/${r.id}`}
-                className="flex items-center gap-4 rounded-sheet bg-white p-5 shadow-lift ring-1 ring-lagoon-200/70 transition hover:ring-turquoise-400"
+                className="flex items-center gap-4 rounded-sheet bg-white p-5 shadow-lift transition hover:-translate-y-px hover:shadow-glass active:translate-y-0"
               >
                 <div className="min-w-0 flex-1">
                   <div className="mb-2">
@@ -55,7 +55,7 @@ export function MyOffersPage() {
                   </p>
                   <p className="text-sm text-ink-faint">{partySummary(r.adults, r.children_ages)}</p>
                   {liveOffer(r) && (
-                    <p className="mt-2 font-semibold text-coral-600">לצפייה בהצעה: {liveOffer(r)!.hotel_name}</p>
+                    <p className="mt-2 font-semibold text-coral-700">לצפייה בהצעה: {liveOffer(r)!.hotel_name}</p>
                   )}
                 </div>
                 <ChevronLeft className="size-6 shrink-0 text-ink-faint" />

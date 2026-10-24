@@ -73,7 +73,7 @@ export function DestinationCombobox({ value, onChange, onPick, autoFocus, inputC
         }}
         className={clsx(
           'h-14 w-full rounded-field bg-white ps-12 pe-4 text-lg ring-1 ring-lagoon-200 transition outline-none',
-          'placeholder:text-ink-faint focus:ring-2 focus:ring-turquoise-400',
+          'placeholder:text-ink-faint focus:ring-2 focus:ring-ocean-700',
           inputClassName,
         )}
       />

@@ -8,9 +8,9 @@ const base =
   'active:translate-y-px disabled:pointer-events-none disabled:opacity-45 disabled:shadow-none'
 
 const variants: Record<Variant, string> = {
-  primary: 'bg-coral-500 text-white shadow-cta hover:bg-coral-600',
+  primary: 'bg-coral-600 text-white shadow-cta hover:bg-coral-700',
   secondary: 'bg-white text-ocean-800 ring-1 ring-lagoon-200 hover:bg-lagoon-50',
-  whatsapp: 'bg-[#25d366] text-[#05301a] hover:bg-[#1fc15c]',
+  whatsapp: 'bg-whatsapp text-whatsapp-ink hover:bg-whatsapp-hover',
   ghost: 'text-ocean-700 hover:bg-lagoon-100',
 }
 

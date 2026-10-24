@@ -78,9 +78,9 @@ function OfferCard({ request, offer, alternatives }: { request: AdminRequest; of
         {[offer, ...alternatives].map((o, i) => (
           <li key={o.id} className="flex items-center justify-between gap-3 py-3">
             <div className="min-w-0">
-              <div className="text-sm text-ink-soft">{i === 0 ? 'הצעה' : 'חלופה'}</div>
               <div className="flex flex-wrap items-center gap-2 font-semibold">
                 {o.hotel_name} <Stars count={o.stars} />
+                {i > 0 && <span className="rounded-full bg-lagoon-100 px-2 py-0.5 text-xs font-medium text-ocean-800">חלופה</span>}
               </div>
               <div className="text-sm text-ink-soft">
                 {o.city}, {o.room_type}
@@ -132,13 +132,13 @@ function OfferCard({ request, offer, alternatives }: { request: AdminRequest; of
             onClick={() => {
               if (window.confirm('לבטל את ההצעה? הקישור ללקוח יפסיק לעבוד.')) update.mutate({ status: 'withdrawn' })
             }}
-            className={buttonClass('ghost', 'md', 'text-coral-600 hover:bg-coral-500/10')}
+            className={buttonClass('ghost', 'md', 'text-coral-700 hover:bg-coral-500/10')}
           >
             <XCircle className="size-4" /> ביטול
           </button>
         )}
       </div>
-      {update.isError && <p role="alert" className="mt-2 text-sm text-coral-600">הפעולה נכשלה. נסו שוב.</p>}
+      {update.isError && <p role="alert" className="mt-2 text-sm text-coral-700">הפעולה נכשלה. נסו שוב.</p>}
     </article>
   )
 }
@@ -204,7 +204,7 @@ export function AdminRequestPage() {
                 onClick={() => {
                   if (window.confirm('לסמן את הבקשה כמבוטלת?')) setStatus.mutate('cancelled')
                 }}
-                className={buttonClass('ghost', 'md', 'text-coral-600 hover:bg-coral-500/10')}
+                className={buttonClass('ghost', 'md', 'text-coral-700 hover:bg-coral-500/10')}
               >
                 ביטול הבקשה
               </button>

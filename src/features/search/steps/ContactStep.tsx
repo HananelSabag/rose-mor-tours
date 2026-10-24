@@ -4,7 +4,7 @@ import { updateDraft } from '../draft'
 import type { StepProps } from './types'
 
 const field =
-  'h-14 w-full rounded-field bg-white px-4 text-lg ring-1 outline-none transition placeholder:text-ink-faint focus:ring-2 focus:ring-turquoise-400'
+  'h-14 w-full rounded-field bg-white px-4 text-lg ring-1 outline-none transition placeholder:text-ink-faint focus:ring-2 focus:ring-ocean-700'
 
 export function ContactStep({ draft }: StepProps) {
   const [phoneTouched, setPhoneTouched] = useState(false)
@@ -43,9 +43,9 @@ export function ContactStep({ draft }: StepProps) {
           onBlur={() => setPhoneTouched(true)}
           aria-invalid={phoneInvalid}
           aria-describedby="contact-phone-help"
-          className={`${field} text-end ${phoneInvalid ? 'ring-coral-500' : 'ring-lagoon-200'}`}
+          className={`${field} text-end ${phoneInvalid ? 'ring-coral-600' : 'ring-lagoon-200'}`}
         />
-        <p id="contact-phone-help" className={`mt-2 text-sm ${phoneInvalid ? 'text-coral-600' : 'text-ink-soft'}`}>
+        <p id="contact-phone-help" className={`mt-2 text-sm ${phoneInvalid ? 'text-coral-700' : 'text-ink-soft'}`}>
           {phoneInvalid ? 'צריך מספר נייד, למשל 050-123-4567' : 'ההצעה תגיע לוואטסאפ במספר הזה'}
         </p>
       </div>

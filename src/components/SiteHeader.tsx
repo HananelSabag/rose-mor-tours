@@ -43,7 +43,7 @@ export function SiteHeader({ overlay = false }: { overlay?: boolean }) {
           rel="noreferrer"
           className="inline-flex h-10 items-center gap-2 rounded-full bg-white/80 px-3 text-sm font-semibold text-ocean-900 ring-1 ring-white/80 backdrop-blur transition hover:bg-white md:px-4"
         >
-          <WhatsAppIcon className="size-5 text-[#1fa855]" />
+          <WhatsAppIcon className="size-5 text-whatsapp-mark" />
           <span className="hidden sm:inline">דברו איתנו</span>
           <span className="sr-only sm:hidden">דברו איתנו בוואטסאפ</span>
         </a>

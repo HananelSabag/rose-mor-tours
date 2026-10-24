@@ -42,7 +42,7 @@ export function Gallery({ images, alt }: { images: string[]; alt: string }) {
         ))}
       </div>
       {images.length > 1 && (
-        <span className="tabular absolute bottom-3 start-3 rounded-full bg-ocean-950/60 px-2.5 py-1 text-sm font-medium text-white backdrop-blur" aria-hidden="true">
+        <span className="tabular absolute bottom-9 start-3 rounded-full md:bottom-3 bg-ocean-950/60 px-2.5 py-1 text-sm font-medium text-white backdrop-blur" aria-hidden="true">
           {index + 1}/{images.length}
         </span>
       )}

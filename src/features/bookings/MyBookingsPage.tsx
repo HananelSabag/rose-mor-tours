@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { ChevronLeft, Luggage } from 'lucide-react'
 import { Link } from 'react-router'
-import { EmptyState, Loading, Page, PageTitle, Pill } from '@/components/Page'
+import { EmptyState, ListSkeleton, Page, PageTitle, Pill } from '@/components/Page'
 import { formatDateRange, formatPrice } from '@/lib/format'
 import { BOOKING_STATUS } from '@/lib/labels'
 import { useSession } from '@/lib/session'
@@ -39,9 +39,9 @@ export function MyBookingsPage() {
       <PageTitle title="ההזמנות שלי" subtitle="ההזמנות שלכם, מהדרכונים ועד הוואוצ׳ר." />
 
       {!ready || (uid && isPending) ? (
-        <Loading />
+        <ListSkeleton />
       ) : isError ? (
-        <p role="alert" className="rounded-field bg-coral-500/10 px-4 py-3 text-coral-600">
+        <p role="alert" className="rounded-field bg-coral-500/10 px-4 py-3 text-coral-700">
           לא הצלחנו לטעון את ההזמנות.{' '}
           <button type="button" className="font-semibold underline" onClick={() => void refetch()}>
             לנסות שוב
@@ -60,7 +60,7 @@ export function MyBookingsPage() {
             <li key={b.id}>
               <Link
                 to={`/bookings/${b.id}`}
-                className="flex items-center gap-3 rounded-sheet bg-white p-5 shadow-lift ring-1 ring-lagoon-200/70 transition hover:ring-turquoise-400"
+                className="flex items-center gap-3 rounded-sheet bg-white p-5 shadow-lift transition hover:-translate-y-px hover:shadow-glass active:translate-y-0"
               >
                 <div className="min-w-0 flex-1">
                   <div className="mb-2 flex items-center justify-between gap-3">

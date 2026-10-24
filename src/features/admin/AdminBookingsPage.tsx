@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import clsx from 'clsx'
 import { ChevronLeft, Luggage } from 'lucide-react'
 import { Link, useSearchParams } from 'react-router'
-import { EmptyState, Loading, Pill } from '@/components/Page'
+import { EmptyState, ListSkeleton, Pill } from '@/components/Page'
 import { formatDateRange, formatPrice } from '@/lib/format'
 import { BOOKING_STATUS } from '@/lib/labels'
 import { supabase } from '@/lib/supabase'
@@ -73,9 +73,9 @@ export function AdminBookingsPage() {
       </div>
 
       {isPending ? (
-        <Loading />
+        <ListSkeleton />
       ) : isError ? (
-        <p role="alert" className="text-coral-600">לא הצלחנו לטעון את ההזמנות.</p>
+        <p role="alert" className="text-coral-700">לא הצלחנו לטעון את ההזמנות.</p>
       ) : rows.length === 0 ? (
         <EmptyState icon={Luggage} title="אין הזמנות בסטטוס הזה" body="כשלקוח לוחץ על ״שריין ושלם עכשיו״, ההזמנה מופיעה כאן מיד." />
       ) : (
@@ -84,7 +84,7 @@ export function AdminBookingsPage() {
             const uploaded = b.travelers.filter((t) => t.passport_path).length
             return (
               <li key={b.id}>
-                <Link to={`/admin/bookings/${b.id}`} className="flex items-center gap-3 rounded-sheet bg-white p-5 shadow-lift ring-1 ring-lagoon-200/70 transition hover:ring-turquoise-400">
+                <Link to={`/admin/bookings/${b.id}`} className="flex items-center gap-3 rounded-sheet bg-white p-5 shadow-lift transition hover:-translate-y-px hover:shadow-glass active:translate-y-0">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-baseline justify-between gap-3">
                       <h2 className="truncate text-lg font-bold">{b.offer?.request?.contact_name ?? 'לקוח'}</h2>

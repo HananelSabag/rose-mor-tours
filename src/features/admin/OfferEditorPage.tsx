@@ -142,7 +142,7 @@ function Editor({ request, root, alt }: Loaded) {
         </div>
         {alternative ? (
           tab === 'alt' && (
-            <button type="button" onClick={removeAlternative} className={buttonClass('ghost', 'md', 'text-coral-600 hover:bg-coral-500/10')}>
+            <button type="button" onClick={removeAlternative} className={buttonClass('ghost', 'md', 'text-coral-700 hover:bg-coral-500/10')}>
               <Trash2 className="size-4" /> הסרת החלופה
             </button>
           )
@@ -185,8 +185,8 @@ function Editor({ request, root, alt }: Loaded) {
 
       <div className="glass safe-bottom fixed inset-x-0 bottom-0 z-30 px-4 pt-3">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 md:px-4">
-          {showErrors && missing.length > 0 && <p className="flex-1 text-sm text-coral-600">חסר: {missing.join(', ')}</p>}
-          {save.isError && <p className="flex-1 text-sm text-coral-600">השמירה נכשלה. נסו שוב.</p>}
+          {showErrors && missing.length > 0 && <p className="flex-1 text-sm text-coral-700">חסר: {missing.join(', ')}</p>}
+          {save.isError && <p className="flex-1 text-sm text-coral-700">השמירה נכשלה. נסו שוב.</p>}
           <button
             type="button"
             disabled={save.isPending}

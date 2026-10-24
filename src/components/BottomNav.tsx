@@ -5,7 +5,7 @@ import { NAV_ITEMS } from '@/app/nav'
 export function BottomNav() {
   const { pathname } = useLocation()
   return (
-    <nav aria-label="ניווט ראשי" className="glass safe-bottom fixed inset-x-0 bottom-0 z-30 rounded-t-sheet md:hidden">
+    <nav aria-label="ניווט ראשי" className="glass safe-bottom fixed inset-x-0 bottom-0 z-30 rounded-t-dock md:hidden">
       <ul className="mx-auto grid max-w-xl grid-cols-4">
         {NAV_ITEMS.map(({ to, label, icon: Icon, match }) => {
           const active = match(pathname)

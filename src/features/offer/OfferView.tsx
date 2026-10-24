@@ -29,7 +29,8 @@ function Fact({ icon: Icon, label, children }: { icon: LucideIcon; label: string
   )
 }
 
-export function PriceBlock({ offer }: { offer: Pick<PublicOffer, 'price_ils' | 'market_price_ils' | 'market_price_source'> }) {
+export function PriceBlock({ offer }: { offer: Pick<PublicOffer, 'price_ils' | 'market_price_ils' | 'market_price_source' | 'check_in' | 'check_out'> }) {
+  const nights = Math.max(1, nightsBetween(offer.check_in, offer.check_out))
   const savings = offer.market_price_ils && offer.market_price_ils > offer.price_ils ? offer.market_price_ils - offer.price_ils : null
   return (
     <section aria-label="מחיר" className="rounded-sheet bg-linear-to-b from-sun-100 to-white p-5 ring-1 ring-sun-300/60">
@@ -43,14 +44,16 @@ export function PriceBlock({ offer }: { offer: Pick<PublicOffer, 'price_ils' | '
         <span className="text-lg font-semibold">המחיר שלנו</span>
         <span className="tabular text-[2.4rem] leading-none font-extrabold text-ocean-900">{formatPrice(offer.price_ils)}</span>
       </div>
-      <div className="mt-1 text-end text-sm text-ink-soft">לכל השהייה</div>
+      <div className="mt-1 text-end text-sm text-ink-soft">
+        לכל השהייה. בערך <span className="tabular">{formatPrice(Math.round(offer.price_ils / nights))}</span> ללילה
+      </div>
       {savings && (
-        <p className="mt-3 rounded-full bg-coral-500 px-4 py-2 text-center font-bold text-white">
+        <p className="mt-3 rounded-full bg-coral-600 px-4 py-2 text-center font-bold text-white">
           חוסכים <span className="tabular">{formatPrice(savings)}</span>
         </p>
       )}
       {savings && offer.market_price_source && (
-        <p className="mt-2 text-center text-xs text-ink-faint">המחיר ברשת נבדק ב: {offer.market_price_source}</p>
+        <p className="mt-2 text-center text-xs text-ink-soft">המחיר ברשת נבדק ב: {offer.market_price_source}</p>
       )}
     </section>
   )
@@ -60,10 +63,12 @@ type Props = {
   offer: PublicOffer
   /** e.g. "שני מבוגרים וילד (5)" */
   guests?: string
+  /** A personal line under the hotel header (never above it). */
+  intro?: ReactNode
 }
 
 /** The body of an offer: everything except the page chrome and the actions. */
-export function OfferView({ offer, guests }: Props) {
+export function OfferView({ offer, guests, intro }: Props) {
   const nights = nightsBetween(offer.check_in, offer.check_out)
   return (
     <div className="space-y-6">
@@ -85,6 +90,7 @@ export function OfferView({ offer, guests }: Props) {
             ))}
           </ul>
         )}
+        {intro && <div className="mt-4">{intro}</div>}
       </header>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

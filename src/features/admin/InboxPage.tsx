@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import { ChevronLeft, Eye, EyeOff, Inbox } from 'lucide-react'
 import { Link, useSearchParams } from 'react-router'
-import { EmptyState, Loading, Pill } from '@/components/Page'
+import { EmptyState, ListSkeleton, Pill } from '@/components/Page'
 import { formatDateRange, nightsBetween, pluralNights } from '@/lib/format'
 import { partySummary } from '@/lib/labels'
 import { remaining, timeAgo, useNow } from '@/lib/time'
@@ -81,7 +81,7 @@ export function InboxPage() {
             >
               {t.label}
               {t.id !== 'archive' && counts[t.id] ? (
-                <span className={clsx('tabular grid min-w-6 place-items-center rounded-full px-1.5 text-sm', t.id === 'new' ? 'bg-coral-500 text-white' : t.id === tab ? 'bg-white/20' : 'bg-lagoon-100')}>
+                <span className={clsx('tabular grid min-w-6 place-items-center rounded-full px-1.5 text-sm', t.id === 'new' ? 'bg-coral-600 text-white' : t.id === tab ? 'bg-white/20' : 'bg-lagoon-100')}>
                   {counts[t.id]}
                 </span>
               ) : null}
@@ -91,16 +91,16 @@ export function InboxPage() {
       </div>
 
       {source.isPending ? (
-        <Loading />
+        <ListSkeleton />
       ) : source.isError ? (
-        <p role="alert" className="rounded-field bg-coral-500/10 px-4 py-3 text-coral-600">לא הצלחנו לטעון את הבקשות.</p>
+        <p role="alert" className="rounded-field bg-coral-500/10 px-4 py-3 text-coral-700">לא הצלחנו לטעון את הבקשות.</p>
       ) : rows.length === 0 ? (
         <EmptyState icon={Inbox} title="אין כאן בקשות" body={tab === 'new' ? 'בקשה חדשה תופיע כאן מיד כשתישלח, בלי לרענן.' : 'כשיהיו בקשות בסטטוס הזה, הן יופיעו כאן.'} />
       ) : (
         <ul className="grid gap-3 lg:grid-cols-2">
           {rows.map((r) => (
             <li key={r.id}>
-              <Link to={`/admin/requests/${r.id}`} className="flex items-center gap-3 rounded-sheet bg-white p-5 shadow-lift ring-1 ring-lagoon-200/70 transition hover:ring-turquoise-400">
+              <Link to={`/admin/requests/${r.id}`} className="flex items-center gap-3 rounded-sheet bg-white p-5 shadow-lift transition hover:-translate-y-px hover:shadow-glass active:translate-y-0">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-baseline justify-between gap-3">
                     <h2 className="truncate text-lg font-bold">{r.contact_name}</h2>

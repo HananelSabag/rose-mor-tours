@@ -10,7 +10,7 @@ import type { BoardBasis } from '@/lib/types'
 import { HIGHLIGHT_SUGGESTIONS, type FieldErrors, type OfferFormValues } from './offerForm'
 
 const input =
-  'h-12 w-full rounded-field bg-white px-4 text-base ring-1 ring-lagoon-200 outline-none placeholder:text-ink-faint focus:ring-2 focus:ring-turquoise-400 aria-invalid:ring-coral-500'
+  'h-12 w-full rounded-field bg-white px-4 text-base ring-1 ring-lagoon-200 outline-none placeholder:text-ink-faint focus:ring-2 focus:ring-ocean-700 aria-invalid:ring-coral-600'
 
 function Field({ label, hint, children, className }: { label: string; hint?: string; children: ReactNode; className?: string }) {
   return (
@@ -78,7 +78,7 @@ function ImagesField({ requestId, images, onChange }: { requestId: string; image
             <button
               type="button"
               onClick={() => onChange(images.filter((p) => p !== path))}
-              className="absolute end-1.5 top-1.5 grid size-8 place-items-center rounded-full bg-white/90 text-coral-600 shadow"
+              className="absolute end-1.5 top-1.5 grid size-8 place-items-center rounded-full bg-white/90 text-coral-700 shadow"
               aria-label="הסרת התמונה"
             >
               <X className="size-4" />
@@ -104,7 +104,7 @@ function ImagesField({ requestId, images, onChange }: { requestId: string; image
           </li>
         )}
       </ul>
-      <p className={clsx('mt-2 text-xs', failed ? 'text-coral-600' : 'text-ink-faint')}>
+      <p className={clsx('mt-2 text-xs', failed ? 'text-coral-700' : 'text-ink-faint')}>
         {failed ? 'חלק מהתמונות לא עלו. נסו שוב.' : 'עד 12 תמונות. נדחסות אוטומטית. הראשונה היא תמונת השער.'}
       </p>
     </div>
@@ -222,7 +222,7 @@ export function OfferFields({ requestId, values: v, errors, onChange }: Props) {
               </Chip>
             ))}
           </div>
-          {errors.board_basis && <p className="mt-1 text-sm text-coral-600">בחרו בסיס אירוח</p>}
+          {errors.board_basis && <p className="mt-1 text-sm text-coral-700">בחרו בסיס אירוח</p>}
         </div>
         <div className="grid grid-cols-2 gap-3">
           <Field label="הגעה">
@@ -258,7 +258,7 @@ export function OfferFields({ requestId, values: v, errors, onChange }: Props) {
             value={v.cancellation_policy}
             onChange={(e) => onChange({ cancellation_policy: e.target.value })}
             placeholder="למשל: אחרי התאריך הזה, דמי ביטול של לילה ראשון"
-            className="w-full resize-y rounded-field bg-white p-4 text-base ring-1 ring-lagoon-200 outline-none focus:ring-2 focus:ring-turquoise-400"
+            className="w-full resize-y rounded-field bg-white p-4 text-base ring-1 ring-lagoon-200 outline-none focus:ring-2 focus:ring-ocean-700"
           />
         </Field>
       </Section>

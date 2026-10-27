@@ -423,6 +423,7 @@ export type Database = {
     Functions: {
       custom_access_token_hook: { Args: { event: Json }; Returns: Json }
       get_offer: { Args: { p_token: string }; Returns: Json }
+      get_offer_preview: { Args: { p_token: string }; Returns: Json }
       start_booking: { Args: { p_offer_id: string }; Returns: string }
       submit_booking_details: {
         Args: { p_booking_id: string }

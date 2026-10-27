@@ -110,7 +110,7 @@ export function PassportsForm({ booking }: { booking: BookingDetails }) {
     >
       <section>
         <h2 className="text-xl font-bold">צילום דרכון לכל נוסע</h2>
-        <p className="mt-1 mb-4 text-ink-soft">המלון מקבל את השמות בדיוק כמו בדרכון. הצילומים נשמרים באחסון פרטי, ורק הצוות יכול לראות אותם.</p>
+        <p className="mt-1 mb-4 text-ink-soft">המלון מקבל את השמות בדיוק כמו בדרכון. הצילומים נשמרים באחסון פרטי שרק הצוות רואה, ונמחקים אוטומטית 30 יום אחרי שתחזרו.</p>
         <ul className="space-y-3">
           {booking.travelers.map((t, i) => (
             <TravelerUpload key={t.id} booking={booking} traveler={t} label={labels[i]!} />

@@ -20,7 +20,7 @@ type AdminBooking = BookingDetails & {
 
 const field = 'h-11 w-full rounded-field bg-white px-3 ring-1 ring-lagoon-200 outline-none focus:ring-2 focus:ring-ocean-700'
 
-function TravelerRow({ traveler, label, onSaved }: { traveler: AdminBooking['travelers'][number]; label: string; onSaved: () => void }) {
+function TravelerRow({ traveler, label, purged, onSaved }: { traveler: AdminBooking['travelers'][number]; label: string; purged: boolean; onSaved: () => void }) {
   const [name, setName] = useState(traveler.full_name_en ?? '')
   const saveName = useMutation({
     mutationFn: async () => {
@@ -44,7 +44,7 @@ function TravelerRow({ traveler, label, onSaved }: { traveler: AdminBooking['tra
             <ExternalLink className="size-4" /> דרכון
           </button>
         ) : (
-          <span className="text-sm text-ink-faint">עוד לא הועלה</span>
+          <span className="text-sm text-ink-faint">{purged ? 'נמחק לפי מדיניות הפרטיות' : 'עוד לא הועלה'}</span>
         )}
       </div>
       <form
@@ -168,7 +168,14 @@ export function AdminBookingPage() {
           <p className="text-sm text-ink-soft">מוסיפים שם באנגלית מהדרכון, בשביל ההזמנה מול הספק.</p>
           <ul className="divide-y divide-lagoon-200">
             {booking.travelers.map((t, i) => (
-              <TravelerRow key={t.id} traveler={t} label={labels[i]!} onSaved={invalidate} />
+              <TravelerRow
+                key={t.id}
+                traveler={t}
+                label={labels[i]!}
+                // After payment a missing scan can only mean the nightly cleanup removed it.
+                purged={booking.status === 'paid' || booking.status === 'voucher_ready' || booking.status === 'cancelled'}
+                onSaved={invalidate}
+              />
             ))}
           </ul>
           <dl className="mt-2 space-y-1 border-t border-lagoon-200 pt-4 text-sm">

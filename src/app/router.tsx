@@ -39,6 +39,7 @@ export const router = createBrowserRouter([
       { path: 'offers/:offerId', lazy: () => import('@/features/admin/OfferEditorPage').then((m) => ({ Component: m.OfferEditorPage })) },
       { path: 'bookings', lazy: () => import('@/features/admin/AdminBookingsPage').then((m) => ({ Component: m.AdminBookingsPage })) },
       { path: 'bookings/:id', lazy: () => import('@/features/admin/AdminBookingPage').then((m) => ({ Component: m.AdminBookingPage })) },
+      { path: 'team', lazy: () => import('@/features/admin/TeamPage').then((m) => ({ Component: m.TeamPage })) },
     ],
   },
 ])

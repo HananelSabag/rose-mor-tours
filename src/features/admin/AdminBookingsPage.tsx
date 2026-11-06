@@ -51,7 +51,7 @@ export function AdminBookingsPage() {
 
   return (
     <div>
-      <h1 className="mb-4 text-3xl font-bold text-ocean-950">הזמנות</h1>
+      <h1 className="mb-4 hidden text-3xl font-bold text-ocean-950 lg:block">הזמנות</h1>
       <div className="-mx-4 mb-5 overflow-x-auto px-4 [scrollbar-width:none]">
         <div className="flex w-max gap-2" role="tablist">
           {TABS.map((t) => (

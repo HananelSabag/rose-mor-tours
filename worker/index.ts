@@ -90,14 +90,17 @@ export default {
   },
 
   async scheduled(_controller, env, ctx) {
-    // Any real database call counts as activity; an unknown token simply returns null.
+    // Touch the Data API (a real query; an unknown token returns null) and Auth, so the
+    // project shows activity on more than one service.
+    const headers = { apikey: env.SUPABASE_PUBLISHABLE_KEY, 'Content-Type': 'application/json' }
     ctx.waitUntil(
-      fetch(`${env.SUPABASE_URL}/rest/v1/rpc/get_offer`, {
-        method: 'POST',
-        headers: { apikey: env.SUPABASE_PUBLISHABLE_KEY, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ p_token: 'keep-alive' }),
-      }).then((res) => {
-        if (!res.ok) throw new Error(`keep-alive failed: ${res.status}`)
+      Promise.all([
+        fetch(`${env.SUPABASE_URL}/rest/v1/rpc/get_offer`, { method: 'POST', headers, body: JSON.stringify({ p_token: 'keep-alive' }) }),
+        fetch(`${env.SUPABASE_URL}/auth/v1/settings`, { headers }),
+      ]).then((responses) => {
+        const failed = responses.filter((r) => !r.ok).map((r) => r.status)
+        console.log(JSON.stringify({ event: 'keep-alive', failed }))
+        if (failed.length) throw new Error(`keep-alive failed: ${failed.join(',')}`)
       }),
     )
   },

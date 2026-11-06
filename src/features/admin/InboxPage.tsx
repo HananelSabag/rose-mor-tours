@@ -63,7 +63,7 @@ export function InboxPage() {
 
   return (
     <div>
-      <h1 className="mb-4 text-3xl font-bold text-ocean-950">בקשות</h1>
+      <h1 className="mb-4 hidden text-3xl font-bold text-ocean-950 lg:block">בקשות</h1>
 
       <div className="-mx-4 mb-5 overflow-x-auto px-4 [scrollbar-width:none]">
         <div className="flex w-max gap-2" role="tablist" aria-label="סינון לפי סטטוס">

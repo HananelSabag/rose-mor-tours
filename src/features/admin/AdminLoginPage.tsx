@@ -3,7 +3,7 @@ import { LoaderCircle, Mail } from 'lucide-react'
 import { useState } from 'react'
 import { Navigate } from 'react-router'
 import { Logo } from '@/components/Logo'
-import { PoolScene } from '@/components/PoolScene'
+import { HeroPhoto } from '@/components/HeroPhoto'
 import { buttonClass } from '@/components/ui/button'
 import { useStaff } from '@/lib/auth'
 import { supabase } from '@/lib/supabase'
@@ -79,10 +79,11 @@ export function AdminLoginPage() {
 
   return (
     <div className="relative isolate grid min-h-dvh place-items-center px-4 py-10">
-      <PoolScene className="fixed inset-0 -z-10 size-full" />
-      <div className="glass w-full max-w-md rounded-sheet p-6 md:p-8">
+      <HeroPhoto fixed />
+      <div className="fixed inset-0 -z-10 bg-ocean-950/45" />
+      <div className="w-full max-w-md rounded-dock bg-white p-6 shadow-glass md:p-8">
         <Logo />
-        <h1 className="mt-6 text-2xl font-bold text-ocean-950">כניסה לצוות</h1>
+        <h1 className="mt-6 text-[22px] font-bold text-ocean-950">כניסה לצוות</h1>
 
         {signedInNotStaff ? (
           <div className="mt-4 space-y-4">

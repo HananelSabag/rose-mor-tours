@@ -17,7 +17,7 @@ export function Chip({ selected, onToggle, children, role = 'checkbox' }: Props)
       aria-checked={role === 'button' ? undefined : selected}
       onClick={onToggle}
       className={clsx(
-        'inline-flex min-h-11 items-center gap-1.5 rounded-full px-4 text-base font-medium transition',
+        'inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full px-4 text-[15px] font-medium whitespace-nowrap transition active:scale-95',
         selected
           ? 'bg-ocean-800 text-white shadow-lift'
           : 'bg-white text-ink ring-1 ring-lagoon-200 hover:ring-turquoise-400',

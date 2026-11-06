@@ -5,15 +5,17 @@ import { SiteHeader } from '@/components/SiteHeader'
 export function AppShell() {
   const { pathname } = useLocation()
   const isHome = pathname === '/'
+  const isOffer = pathname.startsWith('/o/')
   // The questionnaire is a focused flow: it brings its own top bar and sticky action.
   const isFlow = pathname.startsWith('/search')
   // The offer page has its own sticky action bar in place of the tabs.
-  const hideNav = isFlow || pathname.startsWith('/o/')
+  const hideNav = isFlow || isOffer
 
   return (
     <div className="min-h-dvh">
-      {!isFlow && <SiteHeader overlay={isHome} />}
-      <main className={hideNav ? '' : 'pb-28 md:pb-16'}>
+      {/* Phones: inner screens draw their own AppBar; the site header is for home, offers and desktop. */}
+      {isHome ? <SiteHeader overlay /> : !isFlow && <SiteHeader className={isOffer ? undefined : 'hidden md:block'} />}
+      <main className={hideNav ? '' : 'pb-24 md:pb-16'}>
         <Outlet />
       </main>
       {!hideNav && <BottomNav />}

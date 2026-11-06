@@ -3,6 +3,7 @@ import clsx from 'clsx'
 import { Check, Download, Eye, FileText, PartyPopper, SearchX } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { useParams } from 'react-router'
+import { AppBar } from '@/components/AppBar'
 import { Card, EmptyState, Loading, Page } from '@/components/Page'
 import { buttonClass } from '@/components/ui/button'
 import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon'
@@ -49,9 +50,9 @@ function Steps({ status }: { status: BookingDetails['status'] }) {
 function StatusCard({ tone, title, children }: { tone: 'sun' | 'lagoon' | 'coral'; title: string; children: ReactNode }) {
   const tones = { sun: 'from-sun-100 to-white ring-sun-300/60', lagoon: 'from-lagoon-100 to-white ring-lagoon-200', coral: 'from-coral-500/10 to-white ring-coral-600/30' }
   return (
-    <section className={clsx('rounded-sheet bg-linear-to-b p-6 ring-1', tones[tone])}>
-      <h2 className="text-xl font-bold text-ocean-950">{title}</h2>
-      <div className="mt-2 space-y-4 text-ink">{children}</div>
+    <section className={clsx('rounded-sheet bg-linear-to-b p-5 ring-1', tones[tone])}>
+      <h2 className="text-[19px] font-semibold text-ocean-950">{title}</h2>
+      <div className="mt-2 space-y-4 text-[15px] text-ink">{children}</div>
     </section>
   )
 }
@@ -63,12 +64,22 @@ export function BookingPage() {
     mutationFn: (download: boolean) => openSignedFile('vouchers', booking!.voucher_path!, download ? 'voucher' : undefined),
   })
 
-  if (!sessionReady || (signedIn && isPending)) return <Loading />
+  if (!sessionReady || (signedIn && isPending)) {
+    return (
+      <>
+        <AppBar title="ההזמנה" back="/bookings" />
+        <Loading />
+      </>
+    )
+  }
   if (!booking || !booking.offer) {
     return (
-      <Page className="pt-6">
-        <EmptyState icon={SearchX} title="לא מצאנו את ההזמנה" body="אולי היא נפתחה ממכשיר אחר. כתבו לנו בוואטסאפ ונעזור." action={{ to: '/bookings', label: 'להזמנות שלי' }} />
-      </Page>
+      <>
+        <AppBar title="ההזמנה" back="/bookings" />
+        <Page>
+          <EmptyState icon={SearchX} title="לא מצאנו את ההזמנה" body="אולי היא נפתחה ממכשיר אחר. כתבו לנו בוואטסאפ ונעזור." action={{ to: '/bookings', label: 'להזמנות שלי' }} />
+        </Page>
+      </>
     )
   }
 
@@ -77,21 +88,20 @@ export function BookingPage() {
   const cover = offer.images[0]
 
   return (
-    <Page>
-      <Card className="mb-6 flex gap-4 p-4!">
-        {cover && <img src={hotelImageUrl(cover)} alt="" className="size-20 shrink-0 rounded-field object-cover" />}
-        <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-xl font-bold text-ocean-950">{offer.hotel_name}</h1>
-            <Stars count={offer.stars} />
-          </div>
-          <p className="text-ink-soft">
-            {offer.city}. {dates}, {pluralNights(nightsBetween(offer.check_in, offer.check_out))}
+    <>
+      <AppBar title={offer.hotel_name} subtitle={`${offer.city}, ${offer.country}`} back="/bookings" />
+      <Page>
+      <Card className="mb-6 flex gap-3.5 p-3!">
+        {cover && <img src={hotelImageUrl(cover)} alt="" className="size-21 shrink-0 rounded-field bg-lagoon-100 object-cover" />}
+        <div className="flex min-w-0 flex-1 flex-col py-0.5">
+          <Stars count={offer.stars} />
+          <p className="mt-1 text-[15px] text-ink">
+            {dates}, {pluralNights(nightsBetween(offer.check_in, offer.check_out))}
           </p>
-          <p className="text-sm text-ink-soft">
+          <p className="truncate text-[13px] text-ink-soft">
             {offer.room_type}, {BOARD_BASIS[offer.board_basis].label}
           </p>
-          <p className="tabular mt-1 font-bold text-ocean-900">{formatPrice(booking.amount_ils)}</p>
+          <p className="tabular mt-auto pt-1 text-[17px] font-semibold text-ocean-900">{formatPrice(booking.amount_ils)}</p>
         </div>
       </Card>
 
@@ -125,7 +135,7 @@ export function BookingPage() {
       )}
 
       {booking.status === 'voucher_ready' && (
-        <StatusCard tone="sun" title="הוואוצ׳ר מוכן 🎉">
+        <StatusCard tone="sun" title="הוואוצ׳ר מוכן">
           <p>מציגים אותו בקבלה במלון, מהטלפון או מודפס. חופשה נעימה!</p>
           <div className="flex flex-wrap gap-3">
             <button type="button" onClick={() => openVoucher.mutate(false)} className={buttonClass('primary', 'md')}>
@@ -157,10 +167,11 @@ export function BookingPage() {
       )}
 
       {booking.status === 'voucher_ready' && (
-        <p className="mt-6 flex items-center justify-center gap-2 text-ink-soft">
-          <PartyPopper className="size-5 text-coral-500" /> תודה שבחרתם ב־Rose&amp;Mor
+        <p className="mt-6 flex items-center justify-center gap-2 text-[15px] text-ink-soft">
+          <PartyPopper className="size-5 text-coral-600" /> תודה שבחרתם ב־Rose&amp;Mor
         </p>
       )}
-    </Page>
+      </Page>
+    </>
   )
 }

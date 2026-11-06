@@ -1,5 +1,8 @@
+import { Phone } from 'lucide-react'
 import { useNavigate } from 'react-router'
-import { PoolScene } from '@/components/PoolScene'
+import { HeroPhoto } from '@/components/HeroPhoto'
+import { GroupedList, ListRow, SectionLabel } from '@/components/Page'
+import { HERO_END_ID } from '@/components/SiteHeader'
 import { Chip } from '@/components/ui/Chip'
 import { buttonClass } from '@/components/ui/button'
 import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon'
@@ -25,22 +28,28 @@ export function HomePage() {
 
   return (
     <>
-      <section className="relative isolate h-[34rem] overflow-hidden md:h-[42rem]">
-        <PoolScene className="absolute inset-0 -z-10 size-full" />
-        <div className="mx-auto max-w-6xl px-5 pt-24 md:px-8 md:pt-36">
-          <h1 className="animate-rise text-[clamp(2rem,9vw,4.75rem)] leading-[1.05] font-extrabold tracking-tight text-ocean-950">
+      <section className="relative isolate overflow-hidden bg-ocean-900">
+        <HeroPhoto />
+        {/* Scrims: light at the top for the header, deeper at the bottom for the headline. */}
+        <div className="absolute inset-0 -z-10 bg-linear-to-b from-ocean-950/45 via-ocean-950/0 via-35% to-ocean-950/70" />
+        {/* Wide screens: the headline sits on the start (right) side, so darken that edge too. */}
+        <div className="absolute inset-0 -z-10 hidden bg-linear-to-l from-ocean-950/55 via-ocean-950/15 via-45% to-transparent md:block" />
+        <div className="mx-auto flex min-h-[max(27rem,min(36rem,58svh))] max-w-6xl flex-col justify-end px-5 pt-24 pb-30 md:min-h-[38rem] md:px-8 md:pb-44">
+          <h1 className="animate-rise text-[clamp(2.125rem,9.5vw,4.5rem)] leading-[1.06] font-bold tracking-[-0.02em] text-balance text-white">
             <span className="block">אתם בוחרים יעד.</span>
             <span className="block">אנחנו מוצאים מלון.</span>
           </h1>
-          <p className="animate-rise mt-4 max-w-[30ch] text-lg leading-snug text-ocean-900 [animation-delay:120ms] md:text-xl">
-            צוות אנושי שמחפש לכם מלון בחו״ל אצל ספקים סיטונאיים, ושולח הצעה מסודרת לוואטסאפ.
+          <p className="animate-rise mt-3 max-w-[34ch] text-[17px] leading-snug text-white/90 [animation-delay:100ms] md:mt-4 md:text-xl">
+            צוות אנושי מחפש לכם מלון בחו״ל אצל ספקים סיטונאיים, ושולח הצעה מסודרת לוואטסאפ.
           </p>
         </div>
       </section>
 
-      <div className="relative z-10 mx-auto -mt-36 grid max-w-6xl gap-10 px-4 md:-mt-48 md:px-8 lg:grid-cols-[minmax(0,30rem)_1fr] lg:items-start">
-        <section aria-labelledby="start-title" className="glass rounded-sheet p-5 md:p-7">
-          <h2 id="start-title" className="mb-4 text-2xl font-bold text-ocean-950">
+      <div className="relative z-10 mx-auto -mt-24 grid max-w-6xl grid-cols-[minmax(0,1fr)] gap-10 px-4 md:-mt-32 md:px-8 lg:grid-cols-[minmax(0,28rem)_1fr] lg:items-start lg:gap-16">
+        {/* Where the photo ends: the header turns solid once this passes under it. */}
+        <span id={HERO_END_ID} aria-hidden="true" className="absolute top-0 h-px w-px" />
+        <section aria-labelledby="start-title" className="rounded-dock bg-white p-5 shadow-glass md:p-7">
+          <h2 id="start-title" className="mb-4 text-[22px] font-bold text-ocean-950">
             לאן טסים?
           </h2>
           <form
@@ -49,12 +58,9 @@ export function HomePage() {
               start()
             }}
           >
-            <DestinationCombobox
-              value={draft.destination}
-              onChange={(destination) => updateDraft({ destination })}
-              onPick={(label) => start(label)}
-            />
-            <div className="mt-4 flex flex-wrap gap-2">
+            <DestinationCombobox value={draft.destination} onChange={(destination) => updateDraft({ destination })} onPick={(label) => start(label)} />
+            {/* One swipeable row on phones keeps the main button above the fold. */}
+            <div className="-mx-5 mt-3 flex gap-2 overflow-x-auto px-5 [scrollbar-width:none] md:mx-0 md:flex-wrap md:px-0" aria-label="יעדים פופולריים">
               {POPULAR_DESTINATIONS.slice(0, 5).map((name) => {
                 const d = DESTINATIONS.find((x) => x.name === name)
                 return d ? (
@@ -64,50 +70,45 @@ export function HomePage() {
                 ) : null
               })}
             </div>
-            <button type="submit" className={buttonClass('primary', 'lg', 'mt-6 w-full')}>
+            <button type="submit" className={buttonClass('primary', 'lg', 'mt-5 w-full')}>
               למילוי השאלון
             </button>
           </form>
-          <p className="mt-3 text-center text-sm text-ink-soft">בערך דקה. בלי הרשמה ובלי התחייבות.</p>
+          <p className="mt-3 text-center text-[13px] text-ink-soft">בערך דקה. בלי הרשמה ובלי התחייבות.</p>
         </section>
 
-        <section aria-labelledby="how-title" className="lg:pt-56">
-          <h2 id="how-title" className="mb-6 text-2xl font-bold text-ocean-950">
-            איך זה עובד
-          </h2>
-          <ol className="space-y-6">
-            {HOW_IT_WORKS.map((item, i) => (
-              <li key={item.title} className="flex gap-4">
-                <span className="tabular grid size-10 shrink-0 place-items-center rounded-full bg-ocean-800 text-lg font-bold text-white">
-                  {i + 1}
-                </span>
-                <div>
-                  <h3 className="text-lg font-semibold">{item.title}</h3>
-                  <p className="mt-1 max-w-[46ch] text-ink-soft">{item.body}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </section>
+        <div className="space-y-12 lg:pt-44">
+          <section aria-labelledby="how-title">
+            <h2 id="how-title" className="mb-5 px-1 text-[22px] font-bold text-ocean-950">
+              איך זה עובד
+            </h2>
+            <ol className="relative space-y-6 px-1">
+              {HOW_IT_WORKS.map((item, i) => (
+                <li key={item.title} className="relative flex gap-4">
+                  {i < HOW_IT_WORKS.length - 1 && <span aria-hidden="true" className="absolute start-4 top-9 -bottom-5 w-px bg-lagoon-200" />}
+                  <span className="tabular grid size-8 shrink-0 place-items-center rounded-full bg-ocean-800 text-[15px] font-semibold text-white">{i + 1}</span>
+                  <div className="pt-0.5">
+                    <h3 className="text-[17px] font-semibold text-ocean-950">{item.title}</h3>
+                    <p className="mt-0.5 max-w-[46ch] text-[15px] text-ink-soft">{item.body}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </section>
+
+          <section aria-labelledby="help-title" className="lg:max-w-xl">
+            <SectionLabel>
+              <span id="help-title">שאלה לפני שמתחילים?</span>
+            </SectionLabel>
+            <GroupedList>
+              <ListRow icon={WhatsAppIcon} tone="whatsapp" title="כתבו לנו בוואטסאפ" detail="על יעדים, תאריכים או מחירים" href={whatsappLink('היי, יש לי שאלה לגבי מלון בחו״ל')} />
+              <ListRow icon={Phone} title="שיחת טלפון" detail={<span dir="ltr">{BUSINESS.phoneDisplay}</span>} href={`tel:${BUSINESS.phoneE164}`} />
+            </GroupedList>
+          </section>
+        </div>
       </div>
 
-      <section className="mx-auto mt-14 max-w-6xl px-4 md:px-8">
-        <div className="flex flex-col items-start gap-4 rounded-sheet bg-ocean-900 p-6 text-white md:flex-row md:items-center md:justify-between md:p-8">
-          <div>
-            <h2 className="text-xl font-bold">שאלה לפני שמתחילים?</h2>
-            <p className="mt-1 text-white/80">
-              כתבו לנו בוואטסאפ או התקשרו ל־<span dir="ltr">{BUSINESS.phoneDisplay}</span>
-            </p>
-          </div>
-          <a href={whatsappLink('היי, יש לי שאלה לגבי מלון בחו״ל')} target="_blank" rel="noreferrer" className={buttonClass('whatsapp', 'md')}>
-            <WhatsAppIcon />
-            כתבו לנו
-          </a>
-        </div>
-        <footer className="py-8 text-center text-sm text-ink-faint">
-          {BUSINESS.name}, מלונות בחו״ל
-        </footer>
-      </section>
+      <footer className="mx-auto max-w-6xl px-4 pt-10 pb-6 text-center text-[13px] text-ink-faint md:px-8">{BUSINESS.name}, מלונות בחו״ל</footer>
     </>
   )
 }

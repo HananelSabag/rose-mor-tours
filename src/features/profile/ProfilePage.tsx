@@ -1,36 +1,50 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Check, LayoutDashboard, Phone, Share, SquarePlus, Smartphone } from 'lucide-react'
+import clsx from 'clsx'
+import { Check, LayoutDashboard, LoaderCircle, Phone, Smartphone, UserRound } from 'lucide-react'
 import { useState } from 'react'
-import { Link } from 'react-router'
-import { Card, Loading, Page, PageTitle } from '@/components/Page'
+import { AppBar } from '@/components/AppBar'
+import { GroupedList, ListRow, Page, SectionLabel } from '@/components/Page'
 import { buttonClass } from '@/components/ui/button'
 import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon'
+import { useStaff } from '@/lib/auth'
 import { BUSINESS, whatsappLink } from '@/lib/business'
 import { formatPhone, normalizePhone } from '@/lib/format'
-import { useStaff } from '@/lib/auth'
 import { promptInstall, useInstallState } from '@/lib/install'
 import { useSession } from '@/lib/session'
 import { supabase } from '@/lib/supabase'
 
-const field =
-  'h-12 w-full rounded-field bg-lagoon-50 px-4 text-base ring-1 ring-lagoon-200 outline-none focus:ring-2 focus:ring-ocean-700'
-
 type ProfileDetails = { full_name: string | null; phone: string | null; email: string | null }
 
-function DetailsCard({ uid }: { uid: string }) {
-  const { data: profile, isPending, isError } = useQuery({
+function useProfile(uid: string | undefined) {
+  return useQuery({
     queryKey: ['profile', uid],
+    enabled: !!uid,
     queryFn: async () => {
-      const { data, error } = await supabase.from('profiles').select('full_name, phone, email').eq('id', uid).single()
+      const { data, error } = await supabase.from('profiles').select('full_name, phone, email').eq('id', uid!).single()
       if (error) throw error
-      return data
+      return data as ProfileDetails
     },
   })
-
-  if (isPending) return <Card><Loading /></Card>
-  if (isError) return <Card><p role="alert" className="text-coral-700">לא הצלחנו לטעון את הפרטים.</p></Card>
-  return <DetailsForm uid={uid} profile={profile} />
 }
+
+function Identity({ profile }: { profile: ProfileDetails | undefined }) {
+  const name = profile?.full_name?.trim()
+  return (
+    <div className="flex items-center gap-4 px-1">
+      <span className="grid size-16 shrink-0 place-items-center rounded-full bg-linear-to-br from-turquoise-400 to-ocean-700 text-2xl font-bold text-white shadow-lift">
+        {name ? name[0] : <UserRound className="size-7" />}
+      </span>
+      <div className="min-w-0">
+        <p className="truncate text-[19px] font-semibold text-ocean-950">{name || 'אורח'}</p>
+        <p className="text-[15px] text-ink-soft">
+          {profile?.phone ? <span dir="ltr">{formatPhone(profile.phone)}</span> : 'הפרטים יופיעו אחרי הבקשה הראשונה'}
+        </p>
+      </div>
+    </div>
+  )
+}
+
+const rowField = 'flex min-h-14 items-center gap-3 px-4 focus-within:ring-2 focus-within:ring-ocean-700 focus-within:ring-inset'
 
 function DetailsForm({ uid, profile }: { uid: string; profile: ProfileDetails }) {
   const queryClient = useQueryClient()
@@ -39,144 +53,130 @@ function DetailsForm({ uid, profile }: { uid: string; profile: ProfileDetails })
 
   const normalized = normalizePhone(phone)
   const phoneInvalid = phone.trim() !== '' && normalized === null
-  const dirty = (name.trim() !== (profile.full_name ?? '') || (normalized ?? '') !== (profile.phone ?? ''))
+  const dirty = name.trim() !== (profile.full_name ?? '') || (normalized ?? '') !== (profile.phone ?? '')
 
   const save = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase
-        .from('profiles')
-        .update({ full_name: name.trim() || null, phone: normalized })
-        .eq('id', uid)
+      const { error } = await supabase.from('profiles').update({ full_name: name.trim() || null, phone: normalized }).eq('id', uid)
       if (error) throw error
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['profile', uid] }),
   })
 
   return (
-    <Card>
-      <h2 className="mb-4 text-lg font-semibold">הפרטים שלי</h2>
-      <form
-        className="space-y-4"
-        onSubmit={(e) => {
-          e.preventDefault()
-          if (dirty && !phoneInvalid) save.mutate()
-        }}
-      >
-        <label className="block">
-          <span className="mb-1.5 block text-sm font-medium text-ink-soft">שם</span>
-          <input className={field} autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} />
+    <form
+      onSubmit={(e) => {
+        e.preventDefault()
+        if (dirty && !phoneInvalid) save.mutate()
+      }}
+    >
+      <div className="divide-y divide-lagoon-100 overflow-hidden rounded-sheet bg-white shadow-lift">
+        <label className={rowField}>
+          <span className="w-20 shrink-0 text-[15px] text-ink-soft">שם</span>
+          <input className="h-12 min-w-0 flex-1 bg-transparent outline-none placeholder:text-ink-faint" autoComplete="name" placeholder="השם שלכם" value={name} onChange={(e) => setName(e.target.value)} />
         </label>
-        <label className="block">
-          <span className="mb-1.5 block text-sm font-medium text-ink-soft">טלפון נייד</span>
+        <label className={rowField}>
+          <span className="w-20 shrink-0 text-[15px] text-ink-soft">טלפון</span>
           <input
-            className={`${field} text-end ${phoneInvalid ? 'ring-coral-600' : ''}`}
+            className={clsx('h-12 min-w-0 flex-1 bg-transparent text-end outline-none placeholder:text-ink-faint', phoneInvalid && 'text-coral-700')}
             type="tel"
             inputMode="tel"
             dir="ltr"
             autoComplete="tel"
+            placeholder="050-123-4567"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             aria-invalid={phoneInvalid}
           />
-          {phoneInvalid && <span className="mt-1.5 block text-sm text-coral-700">צריך מספר נייד, למשל 050-123-4567</span>}
         </label>
-        {profile.email && <p className="text-sm text-ink-soft">מייל: <span dir="ltr">{profile.email}</span></p>}
-        <div className="flex items-center gap-3">
-          <button type="submit" disabled={!dirty || phoneInvalid || save.isPending} className={buttonClass('secondary', 'md')}>
-            שמירת הפרטים
-          </button>
-          {save.isSuccess && !dirty && (
-            <span className="inline-flex items-center gap-1 text-sm font-medium text-ocean-700" role="status">
-              <Check className="size-4" /> נשמר
+        {profile.email && (
+          <div className="flex min-h-14 items-center gap-3 px-4">
+            <span className="w-20 shrink-0 text-[15px] text-ink-soft">מייל</span>
+            <span className="min-w-0 flex-1 truncate text-end" dir="ltr">
+              {profile.email}
             </span>
-          )}
-          {save.isError && <span className="text-sm text-coral-700" role="alert">השמירה נכשלה. נסו שוב.</span>}
-        </div>
-      </form>
-      <p className="mt-5 border-t border-lagoon-200 pt-4 text-sm leading-relaxed text-ink-soft">
-        הבקשות שלכם שמורות בדפדפן הזה. בשלב התשלום תוכלו לחבר חשבון Google או מייל, ואז תראו אותן מכל מכשיר.
-      </p>
-    </Card>
+          </div>
+        )}
+      </div>
+      {phoneInvalid && <p className="mt-2 px-1 text-[13px] text-coral-700">צריך מספר נייד, למשל 050-123-4567</p>}
+      {dirty && !phoneInvalid && (
+        <button type="submit" disabled={save.isPending} className={buttonClass('primary', 'md', 'animate-rise mt-3 w-full')}>
+          {save.isPending && <LoaderCircle className="size-4 animate-spin" />}
+          שמירת הפרטים
+        </button>
+      )}
+      {save.isSuccess && !dirty && (
+        <p className="mt-2 flex items-center gap-1 px-1 text-[13px] font-medium text-ocean-700" role="status">
+          <Check className="size-4" /> נשמר
+        </p>
+      )}
+      {save.isError && (
+        <p className="mt-2 px-1 text-[13px] text-coral-700" role="alert">
+          השמירה נכשלה. נסו שוב.
+        </p>
+      )}
+    </form>
   )
 }
 
-function InstallCard() {
+function InstallRow() {
   const { canPrompt, installed, ios } = useInstallState()
-  return (
-    <Card>
-      <h2 className="mb-2 flex items-center gap-2 text-lg font-semibold">
-        <Smartphone className="size-5 text-turquoise-500" />
-        האפליקציה במסך הבית
-      </h2>
-      {installed ? (
-        <p className="text-ink-soft">האפליקציה מותקנת. תקבלו בה עדכונים על ההצעות וההזמנות.</p>
-      ) : canPrompt ? (
-        <>
-          <p className="mb-4 text-ink-soft">פותחים בלחיצה, ומקבלים התראה כשההצעה או הוואוצ׳ר מוכנים.</p>
-          <button type="button" onClick={() => void promptInstall()} className={buttonClass('secondary', 'md')}>
-            התקנת האפליקציה
-          </button>
-        </>
-      ) : ios ? (
-        <ol className="space-y-2 text-ink-soft">
-          <li className="flex items-center gap-2">
-            1. בספארי, לוחצים על <Share className="inline size-5 text-ocean-700" aria-label="שיתוף" />
-          </li>
-          <li className="flex items-center gap-2">
-            2. בוחרים ״הוספה למסך הבית״ <SquarePlus className="inline size-5 text-ocean-700" aria-hidden="true" />
-          </li>
-        </ol>
-      ) : (
-        <p className="text-ink-soft">פתחו את האתר בכרום או בספארי בטלפון, והוסיפו אותו למסך הבית מתפריט הדפדפן.</p>
-      )}
-    </Card>
-  )
+  if (installed) return <ListRow icon={Smartphone} title="האפליקציה מותקנת" detail="תקבלו כאן עדכונים על ההצעות וההזמנות" trailing={<Check className="size-5 text-ocean-700" />} />
+  if (canPrompt) return <ListRow icon={Smartphone} title="התקנה למסך הבית" detail="פתיחה בלחיצה, והתראה כשההצעה מוכנה" onClick={() => void promptInstall()} />
+  if (ios) return <ListRow icon={Smartphone} title="הוספה למסך הבית" detail="בספארי: כפתור השיתוף, ואז ״הוספה למסך הבית״" />
+  return <ListRow icon={Smartphone} title="הוספה למסך הבית" detail="מהתפריט של הדפדפן בטלפון" />
 }
 
 export function ProfilePage() {
   const { session, ready } = useSession()
   const { isStaff } = useStaff()
+  const uid = session?.user.id
+  const { data: profile, isPending } = useProfile(uid)
 
   return (
-    <Page>
-      <PageTitle title="פרופיל" />
-      {isStaff && (
-        <Link to="/admin" className={buttonClass('primary', 'md', 'mb-5')}>
-          <LayoutDashboard className="size-5" /> לממשק הצוות
-        </Link>
-      )}
-      <div className="grid gap-5 md:grid-cols-2">
-        {!ready ? (
-          <Card><Loading /></Card>
-        ) : session ? (
-          <DetailsCard uid={session.user.id} />
-        ) : (
-          <Card>
-            <h2 className="mb-2 text-lg font-semibold">הפרטים שלי</h2>
-            <p className="mb-5 text-ink-soft">השם והטלפון יופיעו כאן אחרי שתשלחו בקשה ראשונה.</p>
-            <Link to="/search" className={buttonClass('primary', 'md')}>
-              לחיפוש מלון
-            </Link>
-          </Card>
+    <>
+      <AppBar title="פרופיל" />
+      <Page className="space-y-7 md:max-w-xl">
+        <Identity profile={profile} />
+
+        {isStaff && (
+          <GroupedList>
+            <ListRow icon={LayoutDashboard} title="ממשק הצוות" detail="בקשות, הצעות, הזמנות וצוות" to="/admin" />
+          </GroupedList>
         )}
 
-        <div className="space-y-5">
-          <InstallCard />
-          <Card>
-            <h2 className="mb-2 text-lg font-semibold">צריכים עזרה?</h2>
-            <p className="mb-4 text-ink-soft">הצוות זמין בוואטסאפ, גם כשאתם כבר בחו״ל.</p>
-            <div className="flex flex-wrap gap-3">
-              <a href={whatsappLink()} target="_blank" rel="noreferrer" className={buttonClass('whatsapp', 'md')}>
-                <WhatsAppIcon /> וואטסאפ
-              </a>
-              <a href={`tel:${BUSINESS.phoneE164}`} className={buttonClass('secondary', 'md')}>
-                <Phone className="size-5" />
-                <span dir="ltr">{BUSINESS.phoneDisplay}</span>
-              </a>
-            </div>
-          </Card>
-        </div>
-      </div>
-    </Page>
+        <section>
+          <SectionLabel>הפרטים שלי</SectionLabel>
+          {!ready || (uid && isPending) ? (
+            <div className="skeleton h-28 rounded-sheet!" role="status" aria-label="טוען" />
+          ) : uid && profile ? (
+            <DetailsForm uid={uid} profile={profile} />
+          ) : (
+            <GroupedList>
+              <ListRow icon={UserRound} title="עוד לא שלחתם בקשה" detail="השם והטלפון נשמרים כשממלאים את השאלון" to="/search" />
+            </GroupedList>
+          )}
+        </section>
+
+        <section>
+          <SectionLabel>האפליקציה</SectionLabel>
+          <GroupedList>
+            <InstallRow />
+          </GroupedList>
+        </section>
+
+        <section>
+          <SectionLabel>צריכים עזרה?</SectionLabel>
+          <GroupedList>
+            <ListRow icon={WhatsAppIcon} tone="whatsapp" title="וואטסאפ לצוות" detail="זמינים גם כשאתם כבר בחו״ל" href={whatsappLink()} />
+            <ListRow icon={Phone} title="שיחת טלפון" detail={<span dir="ltr">{BUSINESS.phoneDisplay}</span>} href={`tel:${BUSINESS.phoneE164}`} />
+          </GroupedList>
+        </section>
+
+        <p className="px-1 pb-4 text-[13px] leading-relaxed text-ink-faint">
+          הבקשות שלכם שמורות בדפדפן הזה. בשלב התשלום תוכלו לחבר חשבון Google, ואז תראו אותן מכל מכשיר.
+        </p>
+      </Page>
+    </>
   )
 }

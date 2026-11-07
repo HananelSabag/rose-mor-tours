@@ -1,18 +1,17 @@
 import clsx from 'clsx'
 import { Check } from 'lucide-react'
-import type { ReactNode } from 'react'
 
 type Props = {
   selected: boolean
   onSelect: () => void
   title: string
   hint?: string
-  icon?: ReactNode
   /** radio: one of a group; checkbox: independent toggle */
   role?: 'radio' | 'checkbox'
 }
 
-export function OptionCard({ selected, onSelect, title, hint, icon, role = 'radio' }: Props) {
+/** A choice with a title and an optional hint. Selected = outlined row and a filled check; nothing louder. */
+export function OptionCard({ selected, onSelect, title, hint, role = 'radio' }: Props) {
   return (
     <button
       type="button"
@@ -20,25 +19,13 @@ export function OptionCard({ selected, onSelect, title, hint, icon, role = 'radi
       aria-checked={selected}
       onClick={onSelect}
       className={clsx(
-        'flex w-full items-center gap-4 rounded-field border-2 px-4 py-4 text-start transition',
-        selected
-          ? 'border-ocean-700 bg-lagoon-100 shadow-lift'
-          : 'border-transparent bg-white ring-1 ring-lagoon-200 hover:ring-turquoise-400',
+        'flex w-full items-center gap-4 rounded-field px-4 py-3.5 text-start transition active:scale-[0.99]',
+        selected ? 'bg-lagoon-100 ring-2 ring-ocean-700' : 'bg-white ring-1 ring-lagoon-200 hover:ring-turquoise-400',
       )}
     >
-      {icon && (
-        <span
-          className={clsx(
-            'grid size-11 shrink-0 place-items-center rounded-full',
-            selected ? 'bg-ocean-700 text-white' : 'bg-lagoon-100 text-ocean-700',
-          )}
-        >
-          {icon}
-        </span>
-      )}
       <span className="min-w-0 flex-1">
-        <span className="block text-lg font-semibold leading-snug">{title}</span>
-        {hint && <span className="mt-0.5 block text-sm text-ink-soft">{hint}</span>}
+        <span className="block text-[17px] leading-snug font-semibold">{title}</span>
+        {hint && <span className="mt-0.5 block text-[13px] text-ink-soft">{hint}</span>}
       </span>
       <span
         className={clsx(

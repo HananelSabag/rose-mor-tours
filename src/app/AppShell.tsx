@@ -13,8 +13,8 @@ export function AppShell() {
 
   return (
     <div className="min-h-dvh">
-      {/* Phones: inner screens draw their own AppBar; the site header is for home, offers and desktop. */}
-      {isHome ? <SiteHeader overlay /> : !isFlow && <SiteHeader className={isOffer ? undefined : 'hidden md:block'} />}
+      {/* Phones: inner screens (offer page included) draw their own top bar; the site header is for home and desktop. */}
+      {isHome ? <SiteHeader overlay /> : !isFlow && <SiteHeader className="hidden md:block" />}
       <main className={hideNav ? '' : 'pb-24 md:pb-16'}>
         <Outlet />
       </main>

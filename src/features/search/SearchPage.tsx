@@ -8,7 +8,6 @@ import { STEPS, isStepValid, resetDraftAfterSubmit, useDraft, type StepId } from
 import { ContactStep } from './steps/ContactStep'
 import { DatesStep } from './steps/DatesStep'
 import { DestinationStep } from './steps/DestinationStep'
-import { HotelStep } from './steps/HotelStep'
 import { PartyStep } from './steps/PartyStep'
 import { StyleStep } from './steps/StyleStep'
 import type { StepProps } from './steps/types'
@@ -16,7 +15,6 @@ import { SubmitError, submitRequest } from './submitRequest'
 
 const STEP_COMPONENTS: Record<StepId, ComponentType<StepProps>> = {
   destination: DestinationStep,
-  hotel: HotelStep,
   dates: DatesStep,
   party: PartyStep,
   style: StyleStep,
@@ -73,6 +71,9 @@ export function SearchPage() {
     else goTo(index + 1)
   }
   const valid = isStepValid(step.id, draft)
+  // The style step is all optional: until something is chosen, the button says so.
+  const skippable =
+    step.id === 'style' && !draft.hotelName.trim() && draft.minStars === null && draft.boardBasis === null && draft.vacationStyles.length === 0 && !draft.notes.trim()
   const Step = STEP_COMPONENTS[step.id]
 
   return (
@@ -106,7 +107,7 @@ export function SearchPage() {
         }}
       >
         <div key={step.id} className="animate-rise flex-1">
-          <h1 className="mb-6 text-[2rem] leading-tight font-bold text-ocean-950 md:text-4xl">{step.title}</h1>
+          <h1 className="mb-6 text-[1.75rem] leading-tight font-bold text-ocean-950 md:text-4xl">{step.title}</h1>
           <Step draft={draft} next={next} />
         </div>
 
@@ -118,7 +119,7 @@ export function SearchPage() {
           )}
           <button type="submit" disabled={!valid || submit.isPending} className={buttonClass('primary', 'lg', 'w-full')}>
             {submit.isPending && <LoaderCircle className="size-5 animate-spin" />}
-            {isLast ? (submit.isPending ? 'שולחים...' : 'שליחת הבקשה') : 'המשך'}
+            {isLast ? (submit.isPending ? 'שולחים...' : 'שליחת הבקשה') : skippable ? 'דלגו' : 'המשך'}
           </button>
           <div className="h-3" />
         </div>

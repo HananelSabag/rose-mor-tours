@@ -179,7 +179,7 @@ export function OfferFields({ requestId, values: v, errors, onChange }: Props) {
     <div className="space-y-8">
       <Section title="המלון">
         <Field label="שם המלון">
-          <input {...bind('hotel_name')} className={input} />
+          <input {...bind('hotel_name')} dir="auto" className={input} />
         </Field>
         <div>
           <span className="mb-1.5 block text-sm font-medium text-ink-soft">כוכבים</span>
@@ -211,7 +211,7 @@ export function OfferFields({ requestId, values: v, errors, onChange }: Props) {
 
       <Section title="חדר ותאריכים">
         <Field label="סוג החדר" hint="כמו שהספק כותב, למשל Deluxe Sea View">
-          <input {...bind('room_type')} className={input} />
+          <input {...bind('room_type')} dir="auto" className={input} />
         </Field>
         <div>
           <span className="mb-1.5 block text-sm font-medium text-ink-soft">ארוחות</span>

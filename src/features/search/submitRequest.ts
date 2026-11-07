@@ -20,7 +20,7 @@ export async function submitRequest(draft: Draft): Promise<string> {
   const payload: QuoteRequestInsert = {
     customer_id: userId,
     destination: draft.destination.trim(),
-    hotel_name: draft.hotelMode === 'specific' ? draft.hotelName.trim() : null,
+    hotel_name: draft.hotelName.trim().length >= 2 ? draft.hotelName.trim() : null,
     check_in: draft.checkIn,
     check_out: draft.checkOut,
     flexible_days: draft.flexibleDays,

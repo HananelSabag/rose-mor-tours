@@ -3,6 +3,7 @@ import { ChevronLeft, LoaderCircle, type LucideIcon } from 'lucide-react'
 import type { ComponentType, ReactNode } from 'react'
 import { Link } from 'react-router'
 import { buttonClass } from './ui/button'
+import { WhatsAppIcon } from './ui/WhatsAppIcon'
 
 /** Content column under an AppBar (which owns the top spacing). */
 export function Page({ children, className }: { children: ReactNode; className?: string }) {
@@ -120,7 +121,8 @@ type EmptyProps = {
   icon: LucideIcon
   title: string
   body: string
-  action?: { to: string; label: string }
+  /** `to` for an in-app next step; `href` (a wa.me link) when the way out is talking to the team. */
+  action?: { to: string; label: string } | { href: string; label: string }
 }
 
 export function EmptyState({ icon: Icon, title, body, action }: EmptyProps) {
@@ -131,11 +133,16 @@ export function EmptyState({ icon: Icon, title, body, action }: EmptyProps) {
       </span>
       <h2 className="text-[17px] font-semibold text-ocean-950">{title}</h2>
       <p className="mt-1.5 max-w-xs text-[15px] text-ink-soft">{body}</p>
-      {action && (
-        <Link to={action.to} className={buttonClass('primary', 'md', 'mt-6')}>
-          {action.label}
-        </Link>
-      )}
+      {action &&
+        ('href' in action ? (
+          <a href={action.href} target="_blank" rel="noreferrer" className={buttonClass('whatsapp', 'md', 'mt-6')}>
+            <WhatsAppIcon /> {action.label}
+          </a>
+        ) : (
+          <Link to={action.to} className={buttonClass('primary', 'md', 'mt-6')}>
+            {action.label}
+          </Link>
+        ))}
     </div>
   )
 }

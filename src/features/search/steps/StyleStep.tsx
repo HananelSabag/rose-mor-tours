@@ -23,7 +23,24 @@ export function StyleStep({ draft }: StepProps) {
   return (
     <div className="space-y-8">
       <section>
-        <h2 className="mb-3 text-lg font-semibold">כמה כוכבים?</h2>
+        <label htmlFor="hotel-name" className="mb-1 block text-[17px] font-semibold">
+          יש מלון מסוים?
+        </label>
+        <p className="mb-3 text-[13px] text-ink-soft">לא חובה. נבדוק אותו אצל הספקים שלנו.</p>
+        <input
+          id="hotel-name"
+          // An English hotel name reads left to right, but the Hebrew placeholder stays on the right.
+          dir={draft.hotelName ? 'auto' : 'rtl'}
+          enterKeyHint="next"
+          value={draft.hotelName}
+          onChange={(e) => updateDraft({ hotelName: e.target.value })}
+          placeholder="למשל Lindos Blu"
+          className="h-13 w-full rounded-field bg-white px-4 text-[17px] ring-1 ring-lagoon-200 outline-none placeholder:text-start placeholder:text-ink-faint focus:ring-2 focus:ring-ocean-700"
+        />
+      </section>
+
+      <section>
+        <h2 className="mb-3 text-[17px] font-semibold">כמה כוכבים?</h2>
         <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="דירוג כוכבים">
           {STAR_OPTIONS.map((o) => (
             <Chip key={o.label} role="radio" selected={draft.minStars === o.value} onToggle={() => updateDraft({ minStars: o.value })}>
@@ -35,7 +52,7 @@ export function StyleStep({ draft }: StepProps) {
       </section>
 
       <section>
-        <h2 className="mb-3 text-lg font-semibold">ארוחות</h2>
+        <h2 className="mb-3 text-[17px] font-semibold">ארוחות</h2>
         <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="בסיס אירוח">
           <Chip role="radio" selected={draft.boardBasis === null} onToggle={() => updateDraft({ boardBasis: null })}>
             לא משנה
@@ -46,12 +63,12 @@ export function StyleStep({ draft }: StepProps) {
             </Chip>
           ))}
         </div>
-        {draft.boardBasis && <p className="mt-2 text-sm text-ink-soft">{BOARD_BASIS[draft.boardBasis].hint}</p>}
+        {draft.boardBasis && <p className="mt-2 text-[13px] text-ink-soft">{BOARD_BASIS[draft.boardBasis].hint}</p>}
       </section>
 
       <section>
-        <h2 className="mb-1 text-lg font-semibold">איזו חופשה?</h2>
-        <p className="mb-3 text-sm text-ink-soft">אפשר לבחור יותר מאחד</p>
+        <h2 className="mb-1 text-[17px] font-semibold">איזו חופשה?</h2>
+        <p className="mb-3 text-[13px] text-ink-soft">אפשר לבחור יותר מאחד</p>
         <div className="flex flex-wrap gap-2">
           {(Object.keys(VACATION_STYLE) as VacationStyle[]).map((key) => (
             <Chip key={key} selected={draft.vacationStyles.includes(key)} onToggle={() => toggleStyle(key)}>
@@ -62,10 +79,10 @@ export function StyleStep({ draft }: StepProps) {
       </section>
 
       <section>
-        <label htmlFor="notes" className="mb-1 block text-lg font-semibold">
+        <label htmlFor="notes" className="mb-1 block text-[17px] font-semibold">
           משהו נוסף שחשוב לכם?
         </label>
-        <p className="mb-3 text-sm text-ink-soft">לא חובה</p>
+        <p className="mb-3 text-[13px] text-ink-soft">לא חובה</p>
         <textarea
           id="notes"
           rows={3}

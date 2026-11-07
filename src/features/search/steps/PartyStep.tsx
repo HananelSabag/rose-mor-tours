@@ -1,16 +1,9 @@
-import { BedDouble, DoorOpen, Sofa } from 'lucide-react'
 import { OptionCard } from '@/components/ui/OptionCard'
 import { Stepper } from '@/components/ui/Stepper'
 import { ROOM_SETUP, childAgeLabel } from '@/lib/labels'
 import type { RoomSetup } from '@/lib/types'
 import { updateDraft } from '../draft'
 import type { StepProps } from './types'
-
-const ROOM_ICONS: Record<RoomSetup, typeof BedDouble> = {
-  one_room: BedDouble,
-  connecting: DoorOpen,
-  suite: Sofa,
-}
 
 const AGES = Array.from({ length: 18 }, (_, age) => age)
 
@@ -61,16 +54,14 @@ export function PartyStep({ draft }: StepProps) {
       </div>
 
       <div>
-        <h2 className="mb-3 text-lg font-semibold">איך לחלק אתכם לחדרים?</h2>
+        <h2 className="mb-3 text-[17px] font-semibold">איך לחלק אתכם לחדרים?</h2>
         <div className="space-y-3" role="radiogroup" aria-label="הרכב חדרים">
           {(Object.keys(ROOM_SETUP) as RoomSetup[]).map((key) => {
-            const Icon = ROOM_ICONS[key]
             return (
               <OptionCard
                 key={key}
                 selected={draft.roomSetup === key}
                 onSelect={() => updateDraft({ roomSetup: key })}
-                icon={<Icon className="size-5" />}
                 title={ROOM_SETUP[key].label}
                 hint={ROOM_SETUP[key].hint}
               />

@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import clsx from 'clsx'
-import { Check, Download, Eye, FileText, PartyPopper, SearchX } from 'lucide-react'
+import { Check, FileText, PartyPopper, SearchX } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { useParams } from 'react-router'
 import { AppBar } from '@/components/AppBar'
@@ -48,9 +48,9 @@ function Steps({ status }: { status: BookingDetails['status'] }) {
 }
 
 function StatusCard({ tone, title, children }: { tone: 'sun' | 'lagoon' | 'coral'; title: string; children: ReactNode }) {
-  const tones = { sun: 'from-sun-100 to-white ring-sun-300/60', lagoon: 'from-lagoon-100 to-white ring-lagoon-200', coral: 'from-coral-500/10 to-white ring-coral-600/30' }
+  const accent = { sun: 'border-sun-400', lagoon: 'border-turquoise-500', coral: 'border-coral-600' }
   return (
-    <section className={clsx('rounded-sheet bg-linear-to-b p-5 ring-1', tones[tone])}>
+    <section className={clsx('rounded-sheet border-s-4 bg-white p-5 shadow-lift', accent[tone])}>
       <h2 className="text-[19px] font-semibold text-ocean-950">{title}</h2>
       <div className="mt-2 space-y-4 text-[15px] text-ink">{children}</div>
     </section>
@@ -77,7 +77,12 @@ export function BookingPage() {
       <>
         <AppBar title="ההזמנה" back="/bookings" />
         <Page>
-          <EmptyState icon={SearchX} title="לא מצאנו את ההזמנה" body="אולי היא נפתחה ממכשיר אחר. כתבו לנו בוואטסאפ ונעזור." action={{ to: '/bookings', label: 'להזמנות שלי' }} />
+          <EmptyState
+            icon={SearchX}
+            title="לא מצאנו את ההזמנה"
+            body="אולי היא נפתחה ממכשיר אחר. כתבו לנו ונעזור."
+            action={{ href: whatsappLink('היי, אני לא מוצא את ההזמנה שלי באפליקציה'), label: 'כתבו לנו בוואטסאפ' }}
+          />
         </Page>
       </>
     )
@@ -139,10 +144,7 @@ export function BookingPage() {
           <p>מציגים אותו בקבלה במלון, מהטלפון או מודפס. חופשה נעימה!</p>
           <div className="flex flex-wrap gap-3">
             <button type="button" onClick={() => openVoucher.mutate(false)} className={buttonClass('primary', 'md')}>
-              <Eye className="size-5" /> צפייה בוואוצ׳ר
-            </button>
-            <button type="button" onClick={() => openVoucher.mutate(true)} className={buttonClass('secondary', 'md')}>
-              <Download className="size-5" /> הורדה
+              <FileText className="size-5" /> פתיחת הוואוצ׳ר
             </button>
             {booking.receipt_url && (
               <a href={booking.receipt_url} target="_blank" rel="noreferrer" className={buttonClass('ghost', 'md')}>

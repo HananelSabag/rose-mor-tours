@@ -1,4 +1,5 @@
 import { Phone } from 'lucide-react'
+import { useRef } from 'react'
 import { useNavigate } from 'react-router'
 import { HeroPhoto } from '@/components/HeroPhoto'
 import { GroupedList, ListRow, SectionLabel } from '@/components/Page'
@@ -21,9 +22,11 @@ export function HomePage() {
   const navigate = useNavigate()
   const draft = useDraft()
 
+  const formRef = useRef<HTMLFormElement>(null)
   const start = (destination?: string) => {
     if (destination !== undefined) updateDraft({ destination })
-    navigate(destination || draft.destination.trim().length >= 2 ? '/search?step=hotel' : '/search')
+    if (destination || draft.destination.trim().length >= 2) navigate('/search?step=dates')
+    else formRef.current?.querySelector('input')?.focus()
   }
 
   return (
@@ -53,6 +56,7 @@ export function HomePage() {
             לאן טסים?
           </h2>
           <form
+            ref={formRef}
             onSubmit={(e) => {
               e.preventDefault()
               start()
@@ -71,7 +75,7 @@ export function HomePage() {
               })}
             </div>
             <button type="submit" className={buttonClass('primary', 'lg', 'mt-5 w-full')}>
-              למילוי השאלון
+              המשך
             </button>
           </form>
           <p className="mt-3 text-center text-[13px] text-ink-soft">בערך דקה. בלי הרשמה ובלי התחייבות.</p>

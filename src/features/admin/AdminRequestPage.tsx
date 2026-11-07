@@ -193,11 +193,6 @@ export function AdminRequestPage() {
           <h2 className="mb-1 text-lg font-semibold">מה ביקשו</h2>
           <RequestSummary request={request} />
           <div className="mt-4 flex flex-wrap gap-2 border-t border-lagoon-200 pt-4">
-            {request.status === 'new' && (
-              <button type="button" onClick={() => setStatus.mutate('in_progress')} className={buttonClass('secondary', 'md')}>
-                התחלתי לטפל
-              </button>
-            )}
             {request.status !== 'cancelled' && request.status !== 'closed' && (
               <button
                 type="button"
@@ -227,12 +222,9 @@ export function AdminRequestPage() {
             )}
           </div>
           {roots.length === 0 ? (
-            <div className="rounded-sheet border-2 border-dashed border-lagoon-200 p-8 text-center">
-              <p className="mb-4 text-ink-soft">עוד אין הצעה לבקשה הזאת.</p>
-              <Link to={`/admin/requests/${request.id}/offer`} className={buttonClass('primary', 'lg')}>
-                <Plus className="size-5" /> בניית הצעה
-              </Link>
-            </div>
+            <Link to={`/admin/requests/${request.id}/offer`} className={buttonClass('primary', 'lg', 'w-full')}>
+              <Plus className="size-5" /> בניית הצעה
+            </Link>
           ) : (
             roots.map((root) => (
               <OfferCard key={root.id} request={request} offer={root} alternatives={request.offers.filter((o) => o.parent_offer_id === root.id)} />

@@ -1,16 +1,16 @@
 import { useRef, useState } from 'react'
-import { PoolScene } from '@/components/PoolScene'
+import { BedDouble } from 'lucide-react'
 import { hotelImageUrl } from '@/lib/storage'
 
-/** Swipeable hotel photos (scroll-snap, no library). Falls back to the brand scene. */
+/** Swipeable hotel photos (scroll-snap, no library). Without photos, a calm placeholder. */
 export function Gallery({ images, alt }: { images: string[]; alt: string }) {
   const ref = useRef<HTMLDivElement>(null)
   const [index, setIndex] = useState(0)
 
   if (images.length === 0) {
     return (
-      <div className="relative aspect-[4/3] overflow-hidden bg-lagoon-100 md:aspect-[16/9] md:rounded-sheet">
-        <PoolScene className="absolute inset-0 size-full" />
+      <div className="grid aspect-[16/9] place-items-center bg-lagoon-100 text-ocean-700/50 md:rounded-sheet">
+        <BedDouble className="size-12" strokeWidth={1.4} aria-hidden="true" />
       </div>
     )
   }

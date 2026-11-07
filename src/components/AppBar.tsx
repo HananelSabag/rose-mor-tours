@@ -2,15 +2,13 @@ import clsx from 'clsx'
 import { ArrowRight } from 'lucide-react'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Link } from 'react-router'
-import { whatsappLink } from '@/lib/business'
-import { WhatsAppIcon } from './ui/WhatsAppIcon'
 
 type Props = {
   title: string
   subtitle?: string
   /** Parent route for the back button (screens below a tab). */
   back?: string
-  /** One trailing action; defaults to WhatsApp, the business's real support channel. */
+  /** One optional trailing action. */
   action?: ReactNode
 }
 
@@ -28,19 +26,11 @@ export function BarButton({ label, children, href, onClick }: { label: string; c
   )
 }
 
-export function WhatsAppBarButton() {
-  return (
-    <BarButton label="דברו איתנו בוואטסאפ" href={whatsappLink()}>
-      <WhatsAppIcon className="size-6 text-whatsapp-mark" />
-    </BarButton>
-  )
-}
-
 /**
  * Phone screens get an iOS-style large title that hands over to a compact bar as it scrolls
  * away. From md up the site header carries navigation, so only the large title remains.
  */
-export function AppBar({ title, subtitle, back, action = <WhatsAppBarButton /> }: Props) {
+export function AppBar({ title, subtitle, back, action }: Props) {
   const titleRef = useRef<HTMLDivElement>(null)
   const [compact, setCompact] = useState(false)
 

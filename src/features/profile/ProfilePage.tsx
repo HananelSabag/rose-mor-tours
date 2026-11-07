@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import clsx from 'clsx'
-import { Check, LayoutDashboard, LoaderCircle, Phone, Smartphone, UserRound } from 'lucide-react'
+import { Check, LayoutDashboard, LoaderCircle, LogIn, LogOut, Phone, Smartphone, UserRound } from 'lucide-react'
 import { useState } from 'react'
 import { AppBar } from '@/components/AppBar'
 import { GroupedList, ListRow, Page, SectionLabel } from '@/components/Page'
@@ -27,7 +27,7 @@ function useProfile(uid: string | undefined) {
   })
 }
 
-function Identity({ profile }: { profile: ProfileDetails | undefined }) {
+function Identity({ profile, email }: { profile: ProfileDetails | undefined; email: string | null }) {
   const name = profile?.full_name?.trim()
   return (
     <div className="flex items-center gap-4 px-1">
@@ -36,9 +36,7 @@ function Identity({ profile }: { profile: ProfileDetails | undefined }) {
       </span>
       <div className="min-w-0">
         <p className="truncate text-[19px] font-semibold text-ocean-950">{name || 'אורח'}</p>
-        <p className="text-[15px] text-ink-soft">
-          {profile?.phone ? <span dir="ltr">{formatPhone(profile.phone)}</span> : 'הפרטים יופיעו אחרי הבקשה הראשונה'}
-        </p>
+        <p className="text-[15px] text-ink-soft">{profile?.phone ? <span dir="ltr">{formatPhone(profile.phone)}</span> : email ? <span dir="ltr">{email}</span> : 'בלי חשבון'}</p>
       </div>
     </div>
   )
@@ -57,7 +55,10 @@ function DetailsForm({ uid, profile }: { uid: string; profile: ProfileDetails })
 
   const save = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase.from('profiles').update({ full_name: name.trim() || null, phone: normalized }).eq('id', uid)
+      const { error } = await supabase
+        .from('profiles')
+        .update({ full_name: name.trim() || null, phone: normalized })
+        .eq('id', uid)
       if (error) throw error
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['profile', uid] }),
@@ -73,7 +74,13 @@ function DetailsForm({ uid, profile }: { uid: string; profile: ProfileDetails })
       <div className="divide-y divide-lagoon-100 overflow-hidden rounded-sheet bg-white shadow-lift">
         <label className={rowField}>
           <span className="w-20 shrink-0 text-[15px] text-ink-soft">שם</span>
-          <input className="h-12 min-w-0 flex-1 bg-transparent outline-none placeholder:text-ink-faint" autoComplete="name" placeholder="השם שלכם" value={name} onChange={(e) => setName(e.target.value)} />
+          <input
+            className="h-12 min-w-0 flex-1 bg-transparent outline-none placeholder:text-ink-faint"
+            autoComplete="name"
+            placeholder="השם שלכם"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
         </label>
         <label className={rowField}>
           <span className="w-20 shrink-0 text-[15px] text-ink-soft">טלפון</span>
@@ -129,15 +136,16 @@ function InstallRow() {
 
 export function ProfilePage() {
   const { session, ready } = useSession()
-  const { isStaff } = useStaff()
+  const { isStaff, email } = useStaff()
   const uid = session?.user.id
+  const signedIn = !!session && !session.user.is_anonymous
   const { data: profile, isPending } = useProfile(uid)
 
   return (
     <>
       <AppBar title="פרופיל" />
       <Page className="space-y-7 md:max-w-xl">
-        <Identity profile={profile} />
+        <Identity profile={profile} email={signedIn ? email : null} />
 
         {isStaff && (
           <GroupedList>
@@ -145,17 +153,27 @@ export function ProfilePage() {
           </GroupedList>
         )}
 
+        {!ready || (uid && isPending) ? (
+          <div className="skeleton h-28 rounded-sheet!" role="status" aria-label="טוען" />
+        ) : (
+          uid &&
+          profile && (
+            <section>
+              <SectionLabel>הפרטים שלי</SectionLabel>
+              <DetailsForm uid={uid} profile={profile} />
+            </section>
+          )
+        )}
+
         <section>
-          <SectionLabel>הפרטים שלי</SectionLabel>
-          {!ready || (uid && isPending) ? (
-            <div className="skeleton h-28 rounded-sheet!" role="status" aria-label="טוען" />
-          ) : uid && profile ? (
-            <DetailsForm uid={uid} profile={profile} />
-          ) : (
-            <GroupedList>
-              <ListRow icon={UserRound} title="עוד לא שלחתם בקשה" detail="השם והטלפון נשמרים כשממלאים את השאלון" to="/search" />
-            </GroupedList>
-          )}
+          <SectionLabel>החשבון</SectionLabel>
+          <GroupedList>
+            {signedIn ? (
+              <ListRow icon={LogOut} tone="coral" title="התנתקות" onClick={() => void supabase.auth.signOut()} />
+            ) : (
+              <ListRow icon={LogIn} title="כניסה עם Google" detail="כדי לראות את הבקשות שלכם מכל מכשיר" to="/login" />
+            )}
+          </GroupedList>
         </section>
 
         <section>
@@ -172,10 +190,6 @@ export function ProfilePage() {
             <ListRow icon={Phone} title="שיחת טלפון" detail={<span dir="ltr">{BUSINESS.phoneDisplay}</span>} href={`tel:${BUSINESS.phoneE164}`} />
           </GroupedList>
         </section>
-
-        <p className="px-1 pb-4 text-[13px] leading-relaxed text-ink-faint">
-          הבקשות שלכם שמורות בדפדפן הזה. בשלב התשלום תוכלו לחבר חשבון Google, ואז תראו אותן מכל מכשיר.
-        </p>
       </Page>
     </>
   )

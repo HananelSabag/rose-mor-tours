@@ -23,7 +23,7 @@ function Avatar({ email }: { email: string | null }) {
 }
 
 function StaffLoginLink() {
-  const url = `${window.location.origin}/admin`
+  const url = `${window.location.origin}/login`
   const [copied, setCopied] = useState(false)
   return (
     <div className="flex flex-wrap items-center gap-3 rounded-field bg-lagoon-100 px-4 py-3">

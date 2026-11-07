@@ -21,6 +21,20 @@ export function remaining(iso: string | null, now: number): string | null {
   return `${pad(Math.floor(s / 3600))}:${pad(Math.floor((s % 3600) / 60))}:${pad(s % 60)}`
 }
 
+const clock = new Intl.DateTimeFormat('he-IL', { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })
+const weekday = new Intl.DateTimeFormat('he-IL', { weekday: 'long', day: 'numeric', month: 'numeric' })
+const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime()
+
+/** An absolute deadline people can plan around: "היום ב־18:30", "מחר ב־09:00", "יום שני, 10.11 ב־12:00". */
+export function formatDeadline(iso: string, now = Date.now()): string {
+  const d = new Date(iso)
+  const days = Math.round((startOfDay(d) - startOfDay(new Date(now))) / 86_400_000)
+  const time = clock.format(d)
+  if (days === 0) return `היום ב־${time}`
+  if (days === 1) return `מחר ב־${time}`
+  return `${weekday.format(d)} ב־${time}`
+}
+
 // One shared clock for every countdown on the page.
 let now = Date.now()
 const listeners = new Set<() => void>()

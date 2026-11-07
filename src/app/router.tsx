@@ -23,8 +23,10 @@ export const router = createBrowserRouter([
       { path: '*', element: <NotFoundPage /> },
     ],
   },
-  // Old links (sent before the login moved into /admin itself)
-  { path: '/admin/login', element: <Navigate to="/admin" replace /> },
+  // The one sign-in for everyone; the role decides where it leads.
+  { path: '/login', errorElement: <RouteError />, lazy: () => import('@/features/auth/LoginPage').then((m) => ({ Component: m.LoginPage })) },
+  // Links sent before there was one login
+  { path: '/admin/login', element: <Navigate to="/login?next=/admin" replace /> },
   {
     path: '/admin',
     errorElement: <RouteError />,

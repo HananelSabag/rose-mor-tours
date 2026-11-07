@@ -138,13 +138,11 @@ export function PassportsForm({ booking }: { booking: BookingDetails }) {
       <div>
         <button type="submit" disabled={missing > 0 || !emailValid || !phoneNormalized || submit.isPending} className={buttonClass('primary', 'lg', 'w-full')}>
           {submit.isPending && <LoaderCircle className="size-5 animate-spin" />}
-          המשך לתשלום
+          שליחת הפרטים
         </button>
-        {missing > 0 && (
-          <p className="mt-2 text-center text-sm text-ink-soft">
-            {missing === 1 ? 'חסר עוד דרכון אחד' : `חסרים עוד ${missing} דרכונים`}
-          </p>
-        )}
+        <p className="mt-2 text-center text-[13px] text-ink-soft">
+          {missing === 0 ? 'את הקישור לתשלום נשלח לכם בוואטסאפ' : missing === 1 ? 'חסר עוד דרכון אחד' : `חסרים עוד ${missing} דרכונים`}
+        </p>
       </div>
     </form>
   )

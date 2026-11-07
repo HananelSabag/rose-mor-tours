@@ -52,7 +52,7 @@ export function MyOffersPage() {
                     </p>
                     <p className="text-[13px] text-ink-faint">{partySummary(r.adults, r.children_ages)}</p>
                     {offer && (
-                      <div className="mt-3 flex items-center gap-2.5 rounded-field bg-sun-100 px-3 py-2.5 text-sun-ink">
+                      <div className="mt-3 flex items-center gap-2 border-t border-lagoon-100 pt-3 text-coral-700">
                         <Sparkles className="size-[18px] shrink-0" />
                         <span className="min-w-0 flex-1 truncate text-[15px] font-semibold">
                           {offer.status === 'accepted' ? 'הוזמן' : 'ההצעה מוכנה'}: {offer.hotel_name}

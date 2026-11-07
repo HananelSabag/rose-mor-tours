@@ -2,11 +2,9 @@ import { useSyncExternalStore } from 'react'
 import { normalizePhone, toISODate } from '@/lib/format'
 import type { BoardBasis, RoomSetup, VacationStyle } from '@/lib/types'
 
-export type HotelMode = 'pick_for_me' | 'specific'
-
 export type Draft = {
   destination: string
-  hotelMode: HotelMode | null
+  /** Optional: a hotel they already have in mind */
   hotelName: string
   checkIn: string | null
   checkOut: string | null
@@ -25,7 +23,6 @@ export type Draft = {
 
 export const STEPS = [
   { id: 'destination', title: 'לאן טסים?' },
-  { id: 'hotel', title: 'יש מלון שכבר בחרתם?' },
   { id: 'dates', title: 'מתי?' },
   { id: 'party', title: 'מי טס?' },
   { id: 'style', title: 'איזה מלון מתאים לכם?' },
@@ -38,8 +35,6 @@ export function isStepValid(step: StepId, d: Draft): boolean {
   switch (step) {
     case 'destination':
       return d.destination.trim().length >= 2
-    case 'hotel':
-      return d.hotelMode === 'pick_for_me' || (d.hotelMode === 'specific' && d.hotelName.trim().length >= 2)
     case 'dates':
       return !!d.checkIn && !!d.checkOut && d.checkOut > d.checkIn && d.checkIn >= toISODate(new Date())
     case 'party':
@@ -80,7 +75,6 @@ function emptyDraft(): Draft {
   const contact = read<{ name: string; phone: string }>(CONTACT_KEY)
   return {
     destination: '',
-    hotelMode: null,
     hotelName: '',
     checkIn: null,
     checkOut: null,

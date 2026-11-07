@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import clsx from 'clsx'
-import { ArrowRight, LoaderCircle, Plus, Trash2 } from 'lucide-react'
+import { ArrowRight, LoaderCircle, Plus, Send, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 import { Loading } from '@/components/Page'
@@ -12,6 +12,7 @@ import { partySummary } from '@/lib/labels'
 import { supabase } from '@/lib/supabase'
 import type { Offer, QuoteRequest } from '@/lib/types'
 import { OfferFields } from './OfferFields'
+import { customerWhatsapp, firstName, offerMessage } from './whatsapp'
 import { emptyFromRequest, fromOffer, toPreview, toRow, validate, type OfferFormValues } from './offerForm'
 
 type Loaded = { request: QuoteRequest; root: Offer | null; alt: Offer | null }
@@ -54,6 +55,8 @@ function Editor({ request, root, alt }: Loaded) {
   const [tab, setTab] = useState<'primary' | 'alt'>('primary')
   const [mobileView, setMobileView] = useState<'edit' | 'preview'>('edit')
   const [showErrors, setShowErrors] = useState(false)
+  // A new offer, once saved, is sent from right here instead of from the request page.
+  const [ready, setReady] = useState<{ id: string; token: string } | null>(null)
 
   const errors = validate(primary)
   const altErrors = alternative ? validate(alternative) : {}
@@ -63,14 +66,21 @@ function Editor({ request, root, alt }: Loaded) {
   const save = useMutation({
     mutationFn: async () => {
       let rootId = primary.id
+      let token = root?.public_token ?? ''
       const rootStatus = root?.status ?? 'draft'
       if (rootId) {
         const { error } = await supabase.from('offers').update(toRow(primary)).eq('id', rootId)
         if (error) throw error
       } else {
-        const { data, error } = await supabase.from('offers').insert({ ...toRow(primary), request_id: request.id }).select('id').single()
+        const { data, error } = await supabase.from('offers').insert({ ...toRow(primary), request_id: request.id }).select('id, public_token').single()
         if (error) throw error
         rootId = data.id
+        token = data.public_token
+      }
+      // Working on an offer means the request is being handled; no separate button for that.
+      if (request.status === 'new') {
+        const { error } = await supabase.from('quote_requests').update({ status: 'in_progress' }).eq('id', request.id)
+        if (error) throw error
       }
       if (alternative) {
         if (alternative.id) {
@@ -88,12 +98,42 @@ function Editor({ request, root, alt }: Loaded) {
         const { error } = await supabase.from('offers').delete().eq('id', removedAltId)
         if (error) throw error
       }
+      return { id: rootId!, token, wasDraft: rootStatus === 'draft' }
     },
-    onSuccess: async () => {
+    onSuccess: async ({ id, token, wasDraft }) => {
+      await queryClient.invalidateQueries({ queryKey: ['admin'] })
+      if (wasDraft) setReady({ id, token })
+      else navigate(`/admin/requests/${request.id}`)
+    },
+  })
+
+  const markSent = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('offers').update({ status: 'sent' }).eq('id', id)
+      if (error) throw error
+    },
+    onSettled: async () => {
       await queryClient.invalidateQueries({ queryKey: ['admin'] })
       navigate(`/admin/requests/${request.id}`)
     },
   })
+
+  const sendHref = ready
+    ? customerWhatsapp(
+        request.contact_phone,
+        offerMessage({
+          firstName: firstName(request.contact_name),
+          destination: request.destination,
+          hotelName: primary.hotel_name,
+          stars: primary.stars,
+          checkIn: primary.check_in,
+          checkOut: primary.check_out,
+          price: toRow(primary).price_ils,
+          token: ready.token,
+          hasAlternative: !!alternative,
+        }),
+      )
+    : null
 
   const addAlternative = () => {
     setAlternative({
@@ -185,20 +225,34 @@ function Editor({ request, root, alt }: Loaded) {
 
       <div className="glass safe-bottom fixed inset-x-0 bottom-0 z-30 px-4 pt-3">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 md:px-4">
-          {showErrors && missing.length > 0 && <p className="flex-1 text-sm text-coral-700">חסר: {missing.join(', ')}</p>}
-          {save.isError && <p className="flex-1 text-sm text-coral-700">השמירה נכשלה. נסו שוב.</p>}
-          <button
-            type="button"
-            disabled={save.isPending}
-            onClick={() => {
-              setShowErrors(true)
-              if (!invalid) save.mutate()
-            }}
-            className={buttonClass('primary', 'lg', 'ms-auto w-full sm:w-auto')}
-          >
-            {save.isPending && <LoaderCircle className="size-5 animate-spin" />}
-            {root ? 'שמירת השינויים' : 'שמירה'}
-          </button>
+          {ready && sendHref ? (
+            <>
+              <p className="flex-1 text-[15px] font-medium text-ocean-800">נשמר. נשאר לשלוח ללקוח.</p>
+              <Link to={`/admin/requests/${request.id}`} className={buttonClass('ghost', 'lg')}>
+                אחר כך
+              </Link>
+              <a href={sendHref} target="_blank" rel="noreferrer" onClick={() => markSent.mutate(ready.id)} className={buttonClass('whatsapp', 'lg', 'w-full sm:w-auto')}>
+                <Send className="size-5" /> שליחה בוואטסאפ
+              </a>
+            </>
+          ) : (
+            <>
+              {showErrors && missing.length > 0 && <p className="flex-1 text-sm text-coral-700">חסר: {missing.join(', ')}</p>}
+              {save.isError && <p className="flex-1 text-sm text-coral-700">השמירה נכשלה. נסו שוב.</p>}
+              <button
+                type="button"
+                disabled={save.isPending}
+                onClick={() => {
+                  setShowErrors(true)
+                  if (!invalid) save.mutate()
+                }}
+                className={buttonClass('primary', 'lg', 'ms-auto w-full sm:w-auto')}
+              >
+                {save.isPending && <LoaderCircle className="size-5 animate-spin" />}
+                {root ? 'שמירת השינויים' : 'שמירה'}
+              </button>
+            </>
+          )}
           <div className="h-2 w-full" />
         </div>
       </div>

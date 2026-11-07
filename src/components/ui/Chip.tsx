@@ -19,7 +19,7 @@ export function Chip({ selected, onToggle, children, role = 'checkbox' }: Props)
       className={clsx(
         'inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full px-4 text-[15px] font-medium whitespace-nowrap transition active:scale-95',
         selected
-          ? 'bg-ocean-800 text-white shadow-lift'
+          ? 'bg-lagoon-100 text-ocean-900 ring-2 ring-ocean-700'
           : 'bg-white text-ink ring-1 ring-lagoon-200 hover:ring-turquoise-400',
       )}
     >

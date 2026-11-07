@@ -31,7 +31,12 @@ export function RequestPage() {
       <>
         <AppBar title="הבקשה" back="/offers" />
         <Page>
-          <EmptyState icon={SearchX} title="לא מצאנו את הבקשה הזאת" body="אולי היא נשלחה ממכשיר אחר. אפשר לכתוב לנו בוואטסאפ ונבדוק." action={{ to: '/offers', label: 'לבקשות שלי' }} />
+          <EmptyState
+            icon={SearchX}
+            title="לא מצאנו את הבקשה הזאת"
+            body="אולי היא נשלחה ממכשיר אחר. כתבו לנו ונבדוק."
+            action={{ href: whatsappLink('היי, אני לא מוצא את הבקשה ששלחתי באפליקציה'), label: 'כתבו לנו בוואטסאפ' }}
+          />
         </Page>
       </>
     )
@@ -43,7 +48,7 @@ export function RequestPage() {
 
   return (
     <>
-      <AppBar title={justSent ? 'הבקשה נשלחה' : request.destination} subtitle={justSent ? undefined : dates} back="/offers" />
+      <AppBar title={justSent ? 'קיבלנו את הבקשה' : request.destination} subtitle={justSent ? undefined : dates} back="/offers" />
       <Page className="space-y-4">
         {justSent && (
           <section className="animate-rise flex items-start gap-4 rounded-sheet bg-white p-4 shadow-lift">
@@ -51,9 +56,9 @@ export function RequestPage() {
               <Check className="size-6" strokeWidth={3} />
             </span>
             <div className="min-w-0">
-              <h2 className="text-[17px] font-semibold text-ocean-950">הצוות כבר מחפש בשבילכם</h2>
+              <h2 className="text-[17px] font-semibold text-ocean-950">הבקשה אצל הצוות</h2>
               <p className="mt-0.5 text-[15px] text-ink-soft">
-                ההצעה תגיע לוואטסאפ במספר <span dir="ltr">{formatPhone(request.contact_phone)}</span>, בדרך כלל בשעות הקרובות.
+                ההצעה תגיע לוואטסאפ במספר <span dir="ltr">{formatPhone(request.contact_phone)}</span>, וגם לכאן.
               </p>
             </div>
           </section>
@@ -74,11 +79,13 @@ export function RequestPage() {
           </Link>
         )}
 
-        <div className="grid gap-4 lg:grid-cols-[1fr_1.3fr]">
-          <Card>
-            <h2 className="mb-4 text-[17px] font-semibold text-ocean-950">איפה זה עומד</h2>
-            <StatusTrack status={request.status} />
-          </Card>
+        <div className={justSent ? '' : 'grid gap-4 lg:grid-cols-[1fr_1.3fr]'}>
+          {!justSent && (
+            <Card>
+              <h2 className="mb-4 text-[17px] font-semibold text-ocean-950">איפה זה עומד</h2>
+              <StatusTrack status={request.status} />
+            </Card>
+          )}
           <Card>
             <h2 className="mb-1 text-[17px] font-semibold text-ocean-950">מה ביקשתם</h2>
             <RequestSummary request={request} />
@@ -90,9 +97,11 @@ export function RequestPage() {
             <WhatsAppIcon />
             שאלה על הבקשה
           </a>
-          <Link to="/search" className={buttonClass('secondary', 'md', 'sm:flex-1')}>
-            בקשה חדשה
-          </Link>
+          {!justSent && (
+            <Link to="/search" className={buttonClass('secondary', 'md', 'sm:flex-1')}>
+              בקשה חדשה
+            </Link>
+          )}
         </div>
 
         {justSent && <InstallHint />}

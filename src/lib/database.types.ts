@@ -422,9 +422,18 @@ export type Database = {
     }
     Functions: {
       custom_access_token_hook: { Args: { event: Json }; Returns: Json }
+      finish_guest_claim: { Args: { p_token: string }; Returns: number }
       get_offer: { Args: { p_token: string }; Returns: Json }
       get_offer_preview: { Args: { p_token: string }; Returns: Json }
+      passports_due_for_deletion: {
+        Args: { p_token: string }
+        Returns: {
+          passport_path: string
+          traveler_id: string
+        }[]
+      }
       start_booking: { Args: { p_offer_id: string }; Returns: string }
+      start_guest_claim: { Args: never; Returns: string }
       submit_booking_details: {
         Args: { p_booking_id: string }
         Returns: undefined

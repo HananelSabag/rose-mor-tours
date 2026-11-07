@@ -65,7 +65,7 @@ export function AppBar({ title, subtitle, back, action }: Props) {
           <div className="justify-self-end">{action}</div>
         </div>
       </div>
-      <div ref={titleRef} className="mx-auto w-full max-w-3xl px-4 pt-1 pb-5 md:px-8 md:pt-10 md:pb-8">
+      <div ref={titleRef} className="mx-auto w-full max-w-6xl px-4 pt-1 pb-5 md:px-8 md:pt-10 md:pb-8">
         <h1 className="text-[1.75rem] leading-[2.125rem] font-bold tracking-[-0.01em] text-ocean-950 md:text-4xl">{title}</h1>
         {subtitle && <p className="mt-1.5 text-[15px] text-ink-soft md:text-base">{subtitle}</p>}
       </div>

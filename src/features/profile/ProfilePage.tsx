@@ -144,8 +144,10 @@ export function ProfilePage() {
   return (
     <>
       <AppBar title="פרופיל" />
-      <Page className="space-y-7 md:max-w-xl">
-        <Identity profile={profile} email={signedIn ? email : null} />
+      <Page className="space-y-7 md:grid md:grid-cols-2 md:items-start md:gap-x-10 md:gap-y-8 md:space-y-0">
+        <div className="md:col-span-2">
+          <Identity profile={profile} email={signedIn ? email : null} />
+        </div>
 
         {isStaff && (
           <GroupedList>

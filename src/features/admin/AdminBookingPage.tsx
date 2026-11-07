@@ -128,14 +128,14 @@ export function AdminBookingPage() {
 
   return (
     <div>
-      <Link to="/admin/bookings" className="mb-4 inline-flex items-center gap-1.5 font-medium text-ocean-700 hover:underline">
+      <Link to="/admin/bookings" className="mb-4 inline-flex items-center gap-1.5 text-[15px] font-medium text-ocean-700 hover:underline lg:hidden">
         <ArrowRight className="size-4" /> לכל ההזמנות
       </Link>
 
       <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-3xl font-bold text-ocean-950">{request?.contact_name ?? 'הזמנה'}</h1>
+            <h1 className="text-[1.75rem] leading-tight font-bold text-ocean-950">{request?.contact_name ?? 'הזמנה'}</h1>
             <Pill tone={BOOKING_TONE[booking.status]}>{BOOKING_STATUS[booking.status]}</Pill>
           </div>
           <p className="mt-1 text-ink-soft">
@@ -162,7 +162,7 @@ export function AdminBookingPage() {
         </div>
       </div>
 
-      <div className="grid items-start gap-5 lg:grid-cols-2">
+      <div className="grid items-start gap-5 2xl:grid-cols-2">
         <Card>
           <h2 className="text-lg font-semibold">נוסעים</h2>
           <p className="text-sm text-ink-soft">מוסיפים שם באנגלית מהדרכון, בשביל ההזמנה מול הספק.</p>

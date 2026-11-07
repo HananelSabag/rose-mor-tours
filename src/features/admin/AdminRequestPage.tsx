@@ -54,7 +54,7 @@ function OfferCard({ request, offer, alternatives }: { request: AdminRequest; of
   const live = offer.status === 'sent' || offer.status === 'accepted'
 
   return (
-    <article className="rounded-sheet bg-white p-5 ring-1 ring-lagoon-200">
+    <article className="rounded-sheet bg-white p-4 shadow-lift md:p-5">
       <div className="flex flex-wrap items-center gap-2">
         <Pill tone={state.tone}>{state.label}</Pill>
         {offer.status === 'sent' &&
@@ -165,14 +165,14 @@ export function AdminRequestPage() {
 
   return (
     <div>
-      <Link to="/admin" className="mb-4 inline-flex items-center gap-1.5 font-medium text-ocean-700 hover:underline">
+      <Link to="/admin" className="mb-4 inline-flex items-center gap-1.5 text-[15px] font-medium text-ocean-700 hover:underline lg:hidden">
         <ArrowRight className="size-4" /> לכל הבקשות
       </Link>
 
       <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-3xl font-bold text-ocean-950">{request.contact_name}</h1>
+            <h1 className="text-[1.75rem] leading-tight font-bold text-ocean-950">{request.contact_name}</h1>
             <Pill tone={REQUEST_TONE[request.status]}>{ADMIN_REQUEST_STATUS[request.status]}</Pill>
           </div>
           <p className="mt-1 text-ink-soft">נשלחה {timeAgo(request.created_at)}</p>
@@ -188,9 +188,9 @@ export function AdminRequestPage() {
         </div>
       </div>
 
-      <div className="grid items-start gap-5 lg:grid-cols-[1fr_1.15fr]">
+      <div className="grid items-start gap-5 2xl:grid-cols-[1fr_1.15fr]">
         <Card>
-          <h2 className="mb-1 text-lg font-semibold">מה ביקשו</h2>
+          <h2 className="mb-1 text-[17px] font-semibold text-ocean-950">מה ביקשו</h2>
           <RequestSummary request={request} />
           <div className="mt-4 flex flex-wrap gap-2 border-t border-lagoon-200 pt-4">
             {request.status !== 'cancelled' && request.status !== 'closed' && (
@@ -214,7 +214,7 @@ export function AdminRequestPage() {
 
         <section className="space-y-4">
           <div className="flex items-center justify-between gap-3">
-            <h2 className="text-xl font-bold">הצעות</h2>
+            <h2 className="text-[17px] font-semibold text-ocean-950">הצעות</h2>
             {roots.length > 0 && !hasActiveOffer && (
               <Link to={`/admin/requests/${request.id}/offer`} className={buttonClass('primary', 'md')}>
                 <Plus className="size-4" /> הצעה חדשה

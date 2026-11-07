@@ -32,12 +32,25 @@ export const router = createBrowserRouter([
     errorElement: <RouteError />,
     lazy: () => import('@/features/admin/AdminLayout').then((m) => ({ Component: m.AdminLayout })),
     children: [
-      { index: true, lazy: () => import('@/features/admin/InboxPage').then((m) => ({ Component: m.InboxPage })) },
-      { path: 'requests/:id', lazy: () => import('@/features/admin/AdminRequestPage').then((m) => ({ Component: m.AdminRequestPage })) },
+      // Requests and bookings: list beside the open item on desktop (see SplitView).
+      {
+        lazy: () => import('@/features/admin/InboxPage').then((m) => ({ Component: m.InboxPage })),
+        children: [
+          { index: true, lazy: () => import('@/features/admin/InboxPage').then((m) => ({ Component: m.PickRequest })) },
+          { path: 'requests/:id', lazy: () => import('@/features/admin/AdminRequestPage').then((m) => ({ Component: m.AdminRequestPage })) },
+        ],
+      },
+      // The offer editor needs the full width: form plus live preview.
       { path: 'requests/:requestId/offer', lazy: () => import('@/features/admin/OfferEditorPage').then((m) => ({ Component: m.OfferEditorPage })) },
       { path: 'offers/:offerId', lazy: () => import('@/features/admin/OfferEditorPage').then((m) => ({ Component: m.OfferEditorPage })) },
-      { path: 'bookings', lazy: () => import('@/features/admin/AdminBookingsPage').then((m) => ({ Component: m.AdminBookingsPage })) },
-      { path: 'bookings/:id', lazy: () => import('@/features/admin/AdminBookingPage').then((m) => ({ Component: m.AdminBookingPage })) },
+      {
+        path: 'bookings',
+        lazy: () => import('@/features/admin/AdminBookingsPage').then((m) => ({ Component: m.AdminBookingsPage })),
+        children: [
+          { index: true, lazy: () => import('@/features/admin/AdminBookingsPage').then((m) => ({ Component: m.PickBooking })) },
+          { path: ':id', lazy: () => import('@/features/admin/AdminBookingPage').then((m) => ({ Component: m.AdminBookingPage })) },
+        ],
+      },
       { path: 'team', lazy: () => import('@/features/admin/TeamPage').then((m) => ({ Component: m.TeamPage })) },
     ],
   },

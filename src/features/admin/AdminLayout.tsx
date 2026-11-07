@@ -175,7 +175,7 @@ export function AdminLayout() {
           </div>
         </header>
 
-        <main className="mx-auto max-w-6xl px-4 pt-5 pb-28 md:px-8 lg:pt-8 lg:pb-12">
+        <main className="mx-auto max-w-7xl px-4 pt-5 pb-28 md:px-8 lg:pt-6 lg:pb-12">
           <Outlet />
         </main>
       </div>

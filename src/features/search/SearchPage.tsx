@@ -4,6 +4,7 @@ import { useEffect, type ComponentType } from 'react'
 import { Link, Navigate, useLocation, useNavigate, useSearchParams } from 'react-router'
 import { Waterline } from '@/components/Waterline'
 import { buttonClass } from '@/components/ui/button'
+import { DraftSummary } from './DraftSummary'
 import { STEPS, isStepValid, resetDraftAfterSubmit, useDraft, type StepId } from './draft'
 import { ContactStep } from './steps/ContactStep'
 import { DatesStep } from './steps/DatesStep'
@@ -72,14 +73,13 @@ export function SearchPage() {
   }
   const valid = isStepValid(step.id, draft)
   // The style step is all optional: until something is chosen, the button says so.
-  const skippable =
-    step.id === 'style' && !draft.hotelName.trim() && draft.minStars === null && draft.boardBasis === null && draft.vacationStyles.length === 0 && !draft.notes.trim()
+  const skippable = step.id === 'style' && !draft.hotelName.trim() && draft.minStars === null && draft.boardBasis === null && draft.vacationStyles.length === 0 && !draft.notes.trim()
   const Step = STEP_COMPONENTS[step.id]
 
   return (
     <div className="flex min-h-dvh flex-col">
       <header className="sticky top-0 z-20 bg-lagoon-50/90 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-2xl items-center gap-3 px-4">
+        <div className="mx-auto flex h-16 max-w-2xl items-center gap-3 px-4 lg:max-w-5xl">
           {index > 0 ? (
             <button type="button" onClick={back} className="grid size-11 place-items-center rounded-full text-ocean-800 hover:bg-lagoon-100" aria-label="לשלב הקודם">
               <ArrowRight className="size-6" />
@@ -99,31 +99,37 @@ export function SearchPage() {
         </div>
       </header>
 
-      <form
-        className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-4 pt-4"
-        onSubmit={(e) => {
-          e.preventDefault()
-          if (valid && !submit.isPending) next()
-        }}
-      >
-        <div key={step.id} className="animate-rise flex-1">
-          <h1 className="mb-6 text-[1.75rem] leading-tight font-bold text-ocean-950 md:text-4xl">{step.title}</h1>
-          <Step draft={draft} next={next} />
-        </div>
+      {/* Desktop: the step on the start side, the request so far beside it. */}
+      <div className="mx-auto flex w-full max-w-2xl flex-1 px-4 pt-4 lg:grid lg:max-w-5xl lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start lg:gap-12 lg:pt-8">
+        <form
+          className="flex w-full flex-1 flex-col lg:min-h-0"
+          onSubmit={(e) => {
+            e.preventDefault()
+            if (valid && !submit.isPending) next()
+          }}
+        >
+          <div key={step.id} className="animate-rise flex-1">
+            <h1 className="mb-6 text-[1.75rem] leading-tight font-bold text-ocean-950 md:text-4xl">{step.title}</h1>
+            <Step draft={draft} next={next} />
+          </div>
 
-        <div className="sticky bottom-0 -mx-4 mt-8 bg-linear-to-t from-lagoon-50 from-70% to-transparent px-4 pt-6 safe-bottom">
-          {submit.error && (
-            <p role="alert" className="mb-3 rounded-field bg-coral-500/10 px-4 py-3 text-coral-700">
-              {submit.error instanceof SubmitError ? submit.error.message : 'משהו השתבש. נסו שוב.'}
-            </p>
-          )}
-          <button type="submit" disabled={!valid || submit.isPending} className={buttonClass('primary', 'lg', 'w-full')}>
-            {submit.isPending && <LoaderCircle className="size-5 animate-spin" />}
-            {isLast ? (submit.isPending ? 'שולחים...' : 'שליחת הבקשה') : skippable ? 'דלגו' : 'המשך'}
-          </button>
-          <div className="h-3" />
+          <div className="sticky bottom-0 -mx-4 mt-8 bg-linear-to-t from-lagoon-50 from-70% to-transparent px-4 pt-6 safe-bottom lg:static lg:mx-0 lg:mt-10 lg:bg-none lg:px-0 lg:pt-0">
+            {submit.error && (
+              <p role="alert" className="mb-3 rounded-field bg-coral-500/10 px-4 py-3 text-coral-700">
+                {submit.error instanceof SubmitError ? submit.error.message : 'משהו השתבש. נסו שוב.'}
+              </p>
+            )}
+            <button type="submit" disabled={!valid || submit.isPending} className={buttonClass('primary', 'lg', 'w-full lg:w-auto lg:min-w-56')}>
+              {submit.isPending && <LoaderCircle className="size-5 animate-spin" />}
+              {isLast ? (submit.isPending ? 'שולחים...' : 'שליחת הבקשה') : skippable ? 'דלגו' : 'המשך'}
+            </button>
+            <div className="h-3" />
+          </div>
+        </form>
+        <div className="hidden lg:block">
+          <DraftSummary draft={draft} current={index} onOpen={(i) => setParams({ step: STEPS[i]!.id }, { replace: true })} />
         </div>
-      </form>
+      </div>
     </div>
   )
 }

@@ -34,14 +34,14 @@ export function MyOffersPage() {
         ) : !requests?.length ? (
           <EmptyState icon={Inbox} title="עוד לא שלחתם בקשה" body="ממלאים שאלון של דקה, וההצעה תגיע לכאן ולוואטסאפ." action={{ to: '/search', label: 'לחיפוש מלון' }} />
         ) : (
-          <ul className="space-y-3">
+          <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {requests.map((r) => {
               const offer = liveOffer(r)
               return (
                 <li key={r.id}>
                   <Link
                     to={offer ? `/o/${offer.public_token}` : `/requests/${r.id}`}
-                    className="block rounded-sheet bg-white p-4 shadow-lift transition hover:shadow-glass active:scale-[0.99]"
+                    className="block h-full rounded-sheet bg-white p-4 shadow-lift transition hover:shadow-glass active:scale-[0.99]"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <h2 className="min-w-0 truncate text-[17px] font-semibold text-ocean-950">{r.destination}</h2>

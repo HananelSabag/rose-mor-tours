@@ -105,20 +105,17 @@ export function OfferView({ offer, guests, intro }: Props) {
 
       <PriceBlock offer={offer} />
 
-      {(offer.free_cancellation_until || offer.cancellation_policy) && (
-        <section className="rounded-sheet bg-white p-4 shadow-lift md:p-5">
-          <h2 className="mb-2 flex items-center gap-2 text-[17px] font-semibold text-ocean-950">
-            <ShieldCheck className="size-5 text-turquoise-500" />
-            מדיניות ביטול
-          </h2>
-          {offer.free_cancellation_until && (
-            <p className="text-[15px] font-medium text-ocean-800">
-              ביטול חינם עד {formatDate(offer.free_cancellation_until.slice(0, 10))}
-            </p>
-          )}
-          {offer.cancellation_policy && <p className="mt-1 text-[15px] whitespace-pre-line text-ink-soft">{offer.cancellation_policy}</p>}
-        </section>
-      )}
+      {/* Always said out loud: free cancellation until a date, or none at all. */}
+      <section className="rounded-sheet bg-white p-4 shadow-lift md:p-5">
+        <h2 className="mb-2 flex items-center gap-2 text-[17px] font-semibold text-ocean-950">
+          <ShieldCheck className="size-5 text-turquoise-500" />
+          ביטול
+        </h2>
+        <p className={offer.free_cancellation_until ? 'text-[15px] font-medium text-ocean-800' : 'text-[15px] font-medium text-ink'}>
+          {offer.free_cancellation_until ? `ביטול חינם עד ${formatDate(offer.free_cancellation_until.slice(0, 10))}` : 'אין ביטול חינם'}
+        </p>
+        {offer.cancellation_policy && <p className="mt-1 text-[15px] whitespace-pre-line text-ink-soft">{offer.cancellation_policy}</p>}
+      </section>
     </div>
   )
 }

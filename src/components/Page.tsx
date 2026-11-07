@@ -5,9 +5,9 @@ import { Link } from 'react-router'
 import { buttonClass } from './ui/button'
 import { WhatsAppIcon } from './ui/WhatsAppIcon'
 
-/** Content column under an AppBar (which owns the top spacing). */
+/** Content column under an AppBar (which owns the top spacing); lines up with the site header. */
 export function Page({ children, className }: { children: ReactNode; className?: string }) {
-  return <div className={clsx('mx-auto w-full max-w-3xl px-4 md:px-8', className)}>{children}</div>
+  return <div className={clsx('mx-auto w-full max-w-6xl px-4 md:px-8', className)}>{children}</div>
 }
 
 /** Legacy title block for screens without an AppBar (desktop-only views). */
@@ -102,7 +102,7 @@ export function Loading({ label = 'טוען' }: { label?: string }) {
 /** Placeholder rows shaped like the list cards they precede. */
 export function ListSkeleton({ rows = 3 }: { rows?: number }) {
   return (
-    <ul className="space-y-3" role="status" aria-label="טוען">
+    <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3" role="status" aria-label="טוען">
       {Array.from({ length: rows }, (_, i) => (
         <li key={i} className="rounded-sheet bg-white p-4 shadow-lift">
           <div className="flex items-center justify-between gap-3">

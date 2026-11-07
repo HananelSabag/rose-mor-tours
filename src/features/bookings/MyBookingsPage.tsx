@@ -52,7 +52,7 @@ export function MyBookingsPage() {
         ) : !bookings?.length ? (
           <EmptyState icon={Luggage} title="עוד אין הזמנות" body="אחרי שתשריינו הצעה, ההזמנה והוואוצ׳ר יחכו לכם כאן." action={{ to: '/offers', label: 'להצעות שלי' }} />
         ) : (
-          <ul className="space-y-3">
+          <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {bookings.map((b) => {
               const cover = b.offer?.images[0]
               return (

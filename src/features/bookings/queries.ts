@@ -3,7 +3,7 @@ import { useSession } from '@/lib/session'
 import { supabase } from '@/lib/supabase'
 
 export const BOOKING_SELECT =
-  'id, status, amount_ils, installments, contact_email, contact_phone, receipt_url, paid_at, voucher_path, voucher_ready_at, created_at, ' +
+  'id, status, amount_ils, installments, contact_email, contact_phone, receipt_url, paid_at, voucher_path, voucher_ready_at, created_at, free_cancellation_until, cancellation_policy, ' +
   'offer:offers(id, hotel_name, city, country, stars, room_type, board_basis, check_in, check_out, images, public_token), ' +
   'travelers(id, is_child, full_name_en, passport_path, created_at)'
 
@@ -38,6 +38,9 @@ export type BookingDetails = {
   voucher_path: string | null
   voucher_ready_at: string | null
   created_at: string
+  /** The cancellation terms at the moment of booking (null: no free cancellation). */
+  free_cancellation_until: string | null
+  cancellation_policy: string | null
   offer: {
     id: string
     hotel_name: string

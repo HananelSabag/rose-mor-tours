@@ -9,7 +9,7 @@ import { buttonClass } from '@/components/ui/button'
 import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon'
 import { Stars } from '@/features/offer/OfferView'
 import { whatsappLink } from '@/lib/business'
-import { formatDateRange, formatPrice, nightsBetween, pluralNights } from '@/lib/format'
+import { formatDate, formatDateRange, formatPrice, nightsBetween, pluralNights } from '@/lib/format'
 import { BOARD_BASIS } from '@/lib/labels'
 import { hotelImageUrl } from '@/lib/storage'
 import { PassportsForm } from './PassportsForm'
@@ -107,6 +107,7 @@ export function BookingPage() {
               {offer.room_type}, {BOARD_BASIS[offer.board_basis].label}
             </p>
             <p className="tabular mt-auto pt-1 text-[17px] font-semibold text-ocean-900">{formatPrice(booking.amount_ils)}</p>
+            <p className="text-[13px] text-ink-soft">{booking.free_cancellation_until ? `ביטול חינם עד ${formatDate(booking.free_cancellation_until)}` : 'אין ביטול חינם'}</p>
           </div>
         </Card>
         <div className="min-w-0 lg:col-start-1 lg:row-start-1">

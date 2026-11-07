@@ -17,6 +17,17 @@ import { emptyFromRequest, fromOffer, toPreview, toRow, validate, type OfferForm
 
 type Loaded = { request: QuoteRequest; root: Offer | null; alt: Offer | null }
 
+/** The database refuses impossible offers on its own; say why in plain words. */
+function saveErrorText(error: unknown): string {
+  const e = error as { code?: string; message?: string } | null
+  if (e?.code === '55000' && e.message?.includes('booked or closed')) return 'אי אפשר לשנות הצעה שכבר הוזמנה. בונים הצעה חדשה.'
+  if (e?.code === '55000') return 'יש כבר הצעה אחרת לבקשה הזאת בתהליך הזמנה.'
+  if (e?.code === '22023' && e.message?.includes('check_in')) return 'תאריך ההגעה עבר.'
+  if (e?.code === '22023') return 'תאריך הביטול החינם עבר.'
+  if (e?.code === '23514') return 'יש נתון לא הגיוני: ביטול חינם אחרי ההגעה, או מחיר ברשת נמוך משלנו.'
+  return 'השמירה נכשלה. נסו שוב.'
+}
+
 export function OfferEditorPage() {
   const { requestId, offerId } = useParams()
   const { data, isPending, isError } = useQuery({
@@ -55,7 +66,7 @@ function Editor({ request, root, alt }: Loaded) {
   const [tab, setTab] = useState<'primary' | 'alt'>('primary')
   const [showErrors, setShowErrors] = useState(false)
   // A new offer, once saved, is sent from right here instead of from the request page.
-  const [ready, setReady] = useState<{ id: string; token: string } | null>(null)
+  const [ready, setReady] = useState<{ id: string; token: string; update: boolean } | null>(null)
 
   const errors = validate(primary)
   const altErrors = alternative ? validate(alternative) : {}
@@ -97,17 +108,19 @@ function Editor({ request, root, alt }: Loaded) {
         const { error } = await supabase.from('offers').delete().eq('id', removedAltId)
         if (error) throw error
       }
-      return { id: rootId!, token, wasDraft: rootStatus === 'draft' }
+      return { id: rootId!, token, live: rootStatus === 'draft' || rootStatus === 'sent', wasSent: rootStatus === 'sent' }
     },
-    onSuccess: async ({ id, token, wasDraft }) => {
+    onSuccess: async ({ id, token, live, wasSent }) => {
       await queryClient.invalidateQueries({ queryKey: ['admin'] })
-      if (wasDraft) setReady({ id, token })
+      if (live) setReady({ id, token, update: wasSent })
       else navigate(`/admin/requests/${request.id}`)
     },
   })
 
   const markSent = useMutation({
     mutationFn: async (id: string) => {
+      // An edited live offer was already restarted by the database when it was saved.
+      if (ready?.update) return
       const { error } = await supabase.from('offers').update({ status: 'sent' }).eq('id', id)
       if (error) throw error
     },
@@ -259,7 +272,9 @@ function Editor({ request, root, alt }: Loaded) {
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 pb-1 md:px-4">
           {ready && sendHref ? (
             <>
-              <p className="flex-1 text-[15px] font-medium text-ocean-800">נשמר. נשאר לשלוח ללקוח.</p>
+              <p className="flex-1 text-[15px] font-medium text-ocean-800">
+                {ready.update ? 'עודכן. הקישור עובד עוד 24 שעות מעכשיו, כדאי לשלוח ללקוח את העדכון.' : 'נשמר. נשאר לשלוח ללקוח.'}
+              </p>
               <Link to={`/admin/requests/${request.id}`} className={buttonClass('ghost', 'lg')}>
                 אחר כך
               </Link>
@@ -270,7 +285,7 @@ function Editor({ request, root, alt }: Loaded) {
           ) : (
             <>
               {showErrors && missing.length > 0 && <p className="min-w-0 flex-1 text-[13px] text-coral-700">חסר או לא תקין: {missing.join(' · ')}</p>}
-              {save.isError && <p className="flex-1 text-[13px] text-coral-700">השמירה נכשלה. נסו שוב.</p>}
+              {save.isError && <p className="flex-1 text-[13px] text-coral-700">{saveErrorText(save.error)}</p>}
               <button
                 type="button"
                 disabled={save.isPending}

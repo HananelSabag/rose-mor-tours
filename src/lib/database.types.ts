@@ -17,10 +17,14 @@ export type Database = {
       bookings: {
         Row: {
           amount_ils: number
+          cancel_reason: string | null
+          cancellation_policy: string | null
+          cancelled_at: string | null
           contact_email: string | null
           contact_phone: string | null
           created_at: string
           customer_id: string
+          free_cancellation_until: string | null
           grow_process_id: string | null
           grow_transaction_id: string | null
           id: string
@@ -28,6 +32,7 @@ export type Database = {
           offer_id: string
           paid_at: string | null
           receipt_url: string | null
+          refund_ils: number | null
           status: Database["public"]["Enums"]["booking_status"]
           updated_at: string
           voucher_path: string | null
@@ -35,10 +40,14 @@ export type Database = {
         }
         Insert: {
           amount_ils: number
+          cancel_reason?: string | null
+          cancellation_policy?: string | null
+          cancelled_at?: string | null
           contact_email?: string | null
           contact_phone?: string | null
           created_at?: string
           customer_id: string
+          free_cancellation_until?: string | null
           grow_process_id?: string | null
           grow_transaction_id?: string | null
           id?: string
@@ -46,6 +55,7 @@ export type Database = {
           offer_id: string
           paid_at?: string | null
           receipt_url?: string | null
+          refund_ils?: number | null
           status?: Database["public"]["Enums"]["booking_status"]
           updated_at?: string
           voucher_path?: string | null
@@ -53,10 +63,14 @@ export type Database = {
         }
         Update: {
           amount_ils?: number
+          cancel_reason?: string | null
+          cancellation_policy?: string | null
+          cancelled_at?: string | null
           contact_email?: string | null
           contact_phone?: string | null
           created_at?: string
           customer_id?: string
+          free_cancellation_until?: string | null
           grow_process_id?: string | null
           grow_transaction_id?: string | null
           id?: string
@@ -64,6 +78,7 @@ export type Database = {
           offer_id?: string
           paid_at?: string | null
           receipt_url?: string | null
+          refund_ils?: number | null
           status?: Database["public"]["Enums"]["booking_status"]
           updated_at?: string
           voucher_path?: string | null
@@ -99,6 +114,7 @@ export type Database = {
           expires_at: string | null
           first_viewed_at: string | null
           free_cancellation_until: string | null
+          has_free_cancellation: boolean
           highlights: string[]
           hotel_name: string
           id: string
@@ -127,6 +143,7 @@ export type Database = {
           expires_at?: string | null
           first_viewed_at?: string | null
           free_cancellation_until?: string | null
+          has_free_cancellation?: boolean
           highlights?: string[]
           hotel_name: string
           id?: string
@@ -155,6 +172,7 @@ export type Database = {
           expires_at?: string | null
           first_viewed_at?: string | null
           free_cancellation_until?: string | null
+          has_free_cancellation?: boolean
           highlights?: string[]
           hotel_name?: string
           id?: string

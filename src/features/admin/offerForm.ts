@@ -35,7 +35,7 @@ export function emptyFromRequest(r: QuoteRequest): OfferFormValues {
     hotel_name: r.hotel_name ?? '',
     city,
     country,
-    stars: r.min_stars,
+    stars: null,
     room_type: '',
     board_basis: r.board_basis,
     check_in: r.check_in,
@@ -65,7 +65,7 @@ export function fromOffer(o: Offer): OfferFormValues {
     price: String(o.price_ils),
     market_price: o.market_price_ils ? String(o.market_price_ils) : '',
     market_price_source: o.market_price_source ?? '',
-    free_cancellation: o.free_cancellation_until ? 'yes' : 'no',
+    free_cancellation: o.has_free_cancellation ? 'yes' : 'no',
     free_cancellation_until: o.free_cancellation_until?.slice(0, 10) ?? '',
     cancellation_policy: o.cancellation_policy ?? '',
     images: o.images,
@@ -95,6 +95,7 @@ export function validate(v: OfferFormValues, today = toISODate(new Date())): Fie
 
   const price = num(v.price)
   if (!(price > 0)) e.price = 'מחיר'
+  else if (/\.\d{3}(?!\d)/.test(v.price)) e.price = 'מחיר בלי נקודה, למשל 4000'
   if (v.market_price) {
     const market = num(v.market_price)
     if (!(market > 0)) e.market_price = 'המחיר ברשת'
@@ -144,6 +145,7 @@ export function toRow(v: OfferFormValues) {
     price_ils: num(v.price),
     market_price_ils: v.market_price ? num(v.market_price) : null,
     market_price_source: v.market_price ? v.market_price_source.trim() : null,
+    has_free_cancellation: free,
     free_cancellation_until: free ? v.free_cancellation_until || null : null,
     cancellation_policy: v.cancellation_policy.trim() || null,
     images: v.images,

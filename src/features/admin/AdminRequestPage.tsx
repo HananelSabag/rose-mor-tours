@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { ArrowRight, ExternalLink, Eye, EyeOff, Pencil, Phone, Plus, RefreshCw, Send, Ticket, XCircle } from 'lucide-react'
+import { ArrowRight, Eye, EyeOff, Pencil, Phone, Plus, RefreshCw, Send, Ticket, XCircle } from 'lucide-react'
 import { Link, useParams } from 'react-router'
 import { Card, Loading, Pill } from '@/components/Page'
 import { buttonClass } from '@/components/ui/button'
@@ -49,6 +49,7 @@ function OfferCard({ request, offer, alternatives }: { request: AdminRequest; of
     price: offer.price_ils,
     token: offer.public_token,
     hasAlternative: alternatives.length > 0,
+    expiresAt: state.label === 'פגה' ? null : offer.expires_at,
   })
   const waHref = customerWhatsapp(request.contact_phone, message)
   const live = offer.status === 'sent' || offer.status === 'accepted'
@@ -78,8 +79,15 @@ function OfferCard({ request, offer, alternatives }: { request: AdminRequest; of
         {[offer, ...alternatives].map((o, i) => (
           <li key={o.id} className="flex items-center justify-between gap-3 py-3">
             <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-2 font-semibold">
-                {o.hotel_name} <Stars count={o.stars} />
+              <div className="flex flex-wrap items-center gap-2 font-semibold" dir="auto">
+                {live ? (
+                  <a href={offerLink(o.public_token)} target="_blank" rel="noreferrer" className="underline decoration-lagoon-200 underline-offset-4 hover:decoration-ocean-700" title="כמו שהלקוח רואה">
+                    {o.hotel_name}
+                  </a>
+                ) : (
+                  o.hotel_name
+                )}{' '}
+                <Stars count={o.stars} />
                 {i > 0 && <span className="rounded-full bg-lagoon-100 px-2 py-0.5 text-xs font-medium text-ocean-800">חלופה</span>}
               </div>
               <div className="text-sm text-ink-soft">
@@ -108,23 +116,22 @@ function OfferCard({ request, offer, alternatives }: { request: AdminRequest; of
         )}
         {offer.status === 'sent' && (
           <>
-            <a href={waHref} target="_blank" rel="noreferrer" className={buttonClass('whatsapp', 'md')}>
-              <WhatsAppIcon /> שליחה שוב
-            </a>
-            <button type="button" onClick={() => update.mutate({ sent_at: null })} disabled={update.isPending} className={buttonClass('secondary', 'md')}>
-              <RefreshCw className="size-4" /> עוד 24 שעות
-            </button>
+            {state.label === 'פגה' ? (
+              // An expired link would greet the customer with "expired": renew, then send.
+              <a href={waHref} target="_blank" rel="noreferrer" onClick={() => update.mutate({ sent_at: null })} className={buttonClass('whatsapp', 'md')}>
+                <RefreshCw className="size-4" /> חידוש ושליחה
+              </a>
+            ) : (
+              <a href={waHref} target="_blank" rel="noreferrer" className={buttonClass('whatsapp', 'md')}>
+                <WhatsAppIcon /> שליחה שוב
+              </a>
+            )}
           </>
         )}
         {(offer.status === 'draft' || offer.status === 'sent') && !booking && (
           <Link to={`/admin/offers/${offer.id}`} className={buttonClass('secondary', 'md')}>
             <Pencil className="size-4" /> עריכה
           </Link>
-        )}
-        {live && (
-          <a href={offerLink(offer.public_token)} target="_blank" rel="noreferrer" className={buttonClass('ghost', 'md')}>
-            <ExternalLink className="size-4" /> כמו שהלקוח רואה
-          </a>
         )}
         {(offer.status === 'draft' || offer.status === 'sent') && !booking && (
           <button

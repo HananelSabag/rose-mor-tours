@@ -1,6 +1,6 @@
 import { BedDouble, CalendarDays, MapPin, ShieldCheck, Star, Users, Utensils, type LucideIcon } from 'lucide-react'
-import type { ReactNode } from 'react'
-import { formatDate, formatDateRange, formatPrice, nightsBetween, pluralNights } from '@/lib/format'
+import { useState, type ReactNode } from 'react'
+import { formatDate, formatDateRange, formatPrice, nightsBetween, pluralNights, toISODate } from '@/lib/format'
 import { BOARD_BASIS } from '@/lib/labels'
 import type { PublicOffer } from './types'
 
@@ -68,6 +68,9 @@ type Props = {
 /** The body of an offer: everything except the page chrome and the actions. */
 export function OfferView({ offer, guests, intro }: Props) {
   const nights = nightsBetween(offer.check_in, offer.check_out)
+  const [today] = useState(() => toISODate(new Date()))
+  const freeUntil = offer.free_cancellation_until?.slice(0, 10) ?? null
+  const freeOver = !!freeUntil && freeUntil < today
   return (
     <div className="space-y-6">
       <header>
@@ -111,8 +114,8 @@ export function OfferView({ offer, guests, intro }: Props) {
           <ShieldCheck className="size-5 text-turquoise-500" />
           ביטול
         </h2>
-        <p className={offer.free_cancellation_until ? 'text-[15px] font-medium text-ocean-800' : 'text-[15px] font-medium text-ink'}>
-          {offer.free_cancellation_until ? `ביטול חינם עד ${formatDate(offer.free_cancellation_until.slice(0, 10))}` : 'אין ביטול חינם'}
+        <p className={freeUntil && !freeOver ? 'text-[15px] font-medium text-ocean-800' : 'text-[15px] font-medium text-ink'}>
+          {freeUntil ? (freeOver ? `הביטול החינם הסתיים ב־${formatDate(freeUntil)}` : `ביטול חינם עד ${formatDate(freeUntil)}`) : 'אין ביטול חינם'}
         </p>
         {offer.cancellation_policy && <p className="mt-1 text-[15px] whitespace-pre-line text-ink-soft">{offer.cancellation_policy}</p>}
       </section>

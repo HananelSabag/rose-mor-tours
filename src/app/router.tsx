@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router'
+import { Navigate, createBrowserRouter } from 'react-router'
 import { HomePage } from '@/pages/HomePage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 import { RouteError } from '@/pages/RouteError'
@@ -23,11 +23,8 @@ export const router = createBrowserRouter([
       { path: '*', element: <NotFoundPage /> },
     ],
   },
-  {
-    path: '/admin/login',
-    errorElement: <RouteError />,
-    lazy: () => import('@/features/admin/AdminLoginPage').then((m) => ({ Component: m.AdminLoginPage })),
-  },
+  // Old links (sent before the login moved into /admin itself)
+  { path: '/admin/login', element: <Navigate to="/admin" replace /> },
   {
     path: '/admin',
     errorElement: <RouteError />,

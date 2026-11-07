@@ -2,7 +2,8 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import clsx from 'clsx'
 import { ExternalLink, Inbox, LogOut, Ticket, Users, type LucideIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { Link, Navigate, Outlet, ScrollRestoration, useLocation } from 'react-router'
+import { Link, Outlet, ScrollRestoration, useLocation } from 'react-router'
+import { AdminLoginPage } from './AdminLoginPage'
 import { Loading } from '@/components/Page'
 import { useStaff } from '@/lib/auth'
 import { supabase } from '@/lib/supabase'
@@ -114,7 +115,9 @@ export function AdminLayout() {
   const attention = useAttention(isStaff)
 
   if (!ready) return <Loading />
-  if (!isStaff) return <Navigate to="/admin/login" replace />
+  // One address for staff: whoever isn't signed in as staff gets the login screen right here,
+  // and lands on the page they opened once they are in.
+  if (!isStaff) return <AdminLoginPage />
 
   const current = NAV.find((n) => n.match(pathname)) ?? NAV[0]!
   const countFor = (item: NavItem) => (item.badge ? (attention.data?.[item.badge] ?? 0) : 0)

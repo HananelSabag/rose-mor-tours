@@ -1,7 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { LoaderCircle, Mail } from 'lucide-react'
 import { useState } from 'react'
-import { Navigate } from 'react-router'
 import { Logo } from '@/components/Logo'
 import { HeroPhoto } from '@/components/HeroPhoto'
 import { buttonClass } from '@/components/ui/button'
@@ -38,7 +37,7 @@ function GoogleIcon() {
 }
 
 export function AdminLoginPage() {
-  const { ready, session, isStaff, email: signedInEmail } = useStaff()
+  const { ready, session, email: signedInEmail } = useStaff()
   const providers = useAuthProviders()
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
@@ -72,8 +71,6 @@ export function AdminLoginPage() {
       if (error) throw error
     },
   })
-
-  if (ready && isStaff) return <Navigate to="/admin" replace />
 
   const signedInNotStaff = ready && session && !session.user.is_anonymous
 

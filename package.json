@@ -10,7 +10,7 @@
     "typecheck": "tsc -b",
     "preview": "vite preview",
     "db:types": "node scripts/gen-types.mjs",
-    "cf:types": "wrangler types worker/worker-configuration.d.ts",
+    "cf:types": "wrangler types --strict-vars=false worker/worker-configuration.d.ts",
     "deploy": "npm run build && wrangler deploy",
     "screenshots": "node scripts/screenshots.mjs"
   },

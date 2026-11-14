@@ -1,10 +1,22 @@
 import { fileURLToPath, URL } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
+import { defineConfig, type Plugin } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 const shortcutIcon = [{ src: '/pwa-192x192.png', sizes: '192x192', type: 'image/png' }]
+
+// `vite build` stops when .env lacks a value the site can't work without (see .env.example),
+// so a deploy can never ship without the business's real WhatsApp number.
+const requireEnv: Plugin = {
+  name: 'require-env',
+  configResolved({ command, env }) {
+    if (command !== 'build') return
+    const missing = ['VITE_SUPABASE_URL', 'VITE_SUPABASE_PUBLISHABLE_KEY', 'VITE_BUSINESS_PHONE'].filter((name) => !env[name])
+    if (missing.length) throw new Error(`Missing ${missing.join(', ')} in .env (see .env.example)`)
+    if (!/^\+[1-9]\d{7,14}$/.test(env.VITE_BUSINESS_PHONE)) throw new Error('VITE_BUSINESS_PHONE must be E.164, e.g. +972501234567')
+  },
+}
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -12,6 +24,7 @@ export default defineConfig({
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },
   plugins: [
+    requireEnv,
     react(),
     tailwindcss(),
     VitePWA({

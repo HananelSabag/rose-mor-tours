@@ -1,0 +1,24 @@
+// Copy to wrangler.jsonc (not committed) and fill in your Cloudflare account and Supabase project.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // One environment: the same site and database serve testing now and customers at launch.
+  "name": "rose-mor-tours",
+  "account_id": "your-cloudflare-account-id",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    // Offer links go through the Worker first so their preview card carries the hotel.
+    "run_worker_first": ["/o/*"]
+  },
+  "observability": { "enabled": true },
+  // Daily: real API traffic so Supabase Free never pauses the project. Every other day was not
+  // enough: the project was found paused on 06.11.2026.
+  "triggers": { "crons": ["17 4 * * *"] },
+  "vars": {
+    "SUPABASE_URL": "https://your-project-ref.supabase.co",
+    "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_your-key"
+  }
+}

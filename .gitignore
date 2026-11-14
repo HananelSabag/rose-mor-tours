@@ -23,8 +23,17 @@ dist-ssr
 *.sln
 *.sw?
 
-# Env & local tooling (the committed .env holds public values only)
+# Local settings (not committed): copy .env.example to .env and wrangler.example.jsonc to wrangler.jsonc
+.env
+wrangler.jsonc
 *.local
 .wrangler
 dev-dist
-.claude/settings.local.json
+
+# AI assistant notes and internal docs stay on the developer's machine
+CLAUDE.md
+AGENTS.md
+.claude/
+.mcp.json
+scripts/set-supabase-token.*
+docs/

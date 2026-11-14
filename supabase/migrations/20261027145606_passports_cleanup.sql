@@ -46,7 +46,7 @@ $$;
 revoke execute on function public.passports_due_for_deletion(text) from public, anon, authenticated;
 grant execute on function public.passports_due_for_deletion(text) to service_role;
 
--- Nightly at 02:30 UTC (04:30/05:30 in Israel).
+-- Nightly at 02:30 UTC (04:30/05:30 in Israel). Put your project's ref in the URL before applying.
 select cron.schedule(
   'passports-cleanup',
   '30 2 * * *',

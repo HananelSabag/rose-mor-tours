@@ -1,8 +1,14 @@
 // Regenerates src/lib/database.types.ts from the live Supabase schema.
-// Needs SUPABASE_AGENCY_TOKEN (Windows user env var, never stored in the repo).
-import { writeFile } from 'node:fs/promises'
+// Needs SUPABASE_AGENCY_TOKEN (a Supabase access token in an env var, never stored in the repo);
+// the project is the one VITE_SUPABASE_URL in .env points at.
+import { readFile, writeFile } from 'node:fs/promises'
 
-const PROJECT_REF = 'your-project-ref'
+const env = await readFile(new URL('../.env', import.meta.url), 'utf8').catch(() => '')
+const PROJECT_REF = /^VITE_SUPABASE_URL=https:\/\/([a-z0-9]+)\.supabase\.co/m.exec(env)?.[1]
+if (!PROJECT_REF) {
+  console.error('VITE_SUPABASE_URL is not set in .env')
+  process.exit(1)
+}
 const token = process.env.SUPABASE_AGENCY_TOKEN
 if (!token) {
   console.error('SUPABASE_AGENCY_TOKEN is not set')
